@@ -5,15 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>meoponly — student & developer</title>
   
-  <!-- Favicon using GitHub avatar + fallback -->
   <link rel="icon" type="image/png" href="https://github.com/meoponly.png">
   <link rel="apple-touch-icon" href="https://github.com/meoponly.png">
   
-  <!-- Tailwind CSS & FontAwesome -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
-  <!-- Claude-style Typography: Newsreader (Editorial Serif) & Plus Jakarta Sans (Clean UI Sans) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -124,23 +121,22 @@
     </div>
   </footer>
 
-  <!-- Firebase Integration Script -->
+  <!-- Firebase Live Database Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
-    // REPLACE WITH YOUR ACTUAL FIREBASE CONFIG KEYS
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_DATABASE_NAME.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyD1WCOzRfz13BBTGnwMLOcNrdJcTxa5Wrs",
+      authDomain: "meoponly-dev.firebaseapp.com",
+      databaseURL: "https://meoponly-dev-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "meoponly-dev",
+      storageBucket: "meoponly-dev.firebasestorage.app",
+      messagingSenderId: "842770018994",
+      appId: "1:842770018994:web:eb2bdf96a9f135a9220fab",
+      measurementId: "G-FZMGWDHHX1"
     };
 
-    // Default static projects fallback
     const fallbackProjects = [
       {
         title: "IOQM Pro",
@@ -211,26 +207,21 @@
       `).join('');
     }
 
-    // Try fetching live entries from Firebase Realtime Database
     try {
-      if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY") {
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const projectsRef = ref(db, 'projects');
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      const projectsRef = ref(db, 'projects');
 
-        onValue(projectsRef, (snapshot) => {
-          const val = snapshot.val();
-          if (val) {
-            const list = Object.entries(val).map(([id, item]) => ({ id, ...item }));
-            list.sort((a, b) => (Number(a.order) || 99) - (Number(b.order) || 99));
-            renderCards(list);
-          } else {
-            renderCards(fallbackProjects);
-          }
-        }, () => renderCards(fallbackProjects));
-      } else {
-        renderCards(fallbackProjects);
-      }
+      onValue(projectsRef, (snapshot) => {
+        const val = snapshot.val();
+        if (val) {
+          const list = Object.entries(val).map(([id, item]) => ({ id, ...item }));
+          list.sort((a, b) => (Number(a.order) || 99) - (Number(b.order) || 99));
+          renderCards(list);
+        } else {
+          renderCards(fallbackProjects);
+        }
+      }, () => renderCards(fallbackProjects));
     } catch (err) {
       console.warn("Using fallback local projects:", err);
       renderCards(fallbackProjects);
