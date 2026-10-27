@@ -1,873 +1,240 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>meoponly — Systems & Web Engineering</title>
-
-  <!-- Favicon & Touch Icons -->
-  <link rel="icon" type="image/png" sizes="64x64" href="https://github.com/meoponly.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="https://github.com/meoponly.png" />
-  <!-- Inline SVG fallback favicon (Warm Claude Parchment & Terracotta seal 'M') -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231A1917'/%3E%3Crect x='2' y='2' width='28' height='28' rx='5' fill='%23F5F5F0' stroke='%23C15F3D' stroke-width='1.5'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia, serif' font-weight='600' font-size='18' fill='%23C15F3D'%3EM%3C/text%3E%3C/svg%3E" />
-
-  <!-- Tailwind CSS CDN -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>meoponly — student & developer</title>
+  
+  <!-- Favicon using GitHub avatar + fallback -->
+  <link rel="icon" type="image/png" href="https://github.com/meoponly.png">
+  <link rel="apple-touch-icon" href="https://github.com/meoponly.png">
+  
+  <!-- Tailwind CSS & FontAwesome -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Google Fonts: Newsreader (Editorial Serif) + Plus Jakarta Sans (Clean Body) + JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
-
-  <!-- FontAwesome 6 Icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    referrerpolicy="no-referrer"
-  />
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            parchment: {
-              DEFAULT: '#F5F5F0',
-              deep: '#EDECE5',
-              border: '#E2E0D6',
-              borderDark: '#D4D0C2',
-              card: '#FCFCF9',
-              cardHover: '#FFFFFF',
-              charcoal: '#1A1917',
-              body: '#3A3834',
-              muted: '#706E66',
-              clay: '#C15F3D',
-              clayHover: '#A84E30',
-              sand: '#FAF9F5',
-            },
-          },
-          fontFamily: {
-            serif: ['"Newsreader"', 'Georgia', 'serif'],
-            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          },
-          boxShadow: {
-            subtle: '0 1px 3px rgba(26,25,23,0.04), 0 1px 2px rgba(26,25,23,0.02)',
-            elevated: '0 10px 30px -10px rgba(26,25,23,0.08), 0 4px 6px -2px rgba(26,25,23,0.03)',
-            lift: '0 16px 36px -12px rgba(26,25,23,0.12), 0 6px 12px -3px rgba(26,25,23,0.05)',
-          },
-        },
-      },
-    };
-  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Claude-style Typography: Newsreader (Editorial Serif) & Plus Jakarta Sans (Clean UI Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
     body {
       background-color: #F5F5F0;
-      color: #3A3834;
+      color: #1E1E1E;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      -webkit-font-smoothing: antialiased;
     }
-
-    ::selection {
-      background-color: #1A1917;
-      color: #F5F5F0;
+    .font-serif-claude {
+      font-family: 'Newsreader', Georgia, serif;
     }
-
-    /* Subtle paper texture overlay */
-    .paper-texture {
-      background-image: radial-gradient(rgba(26, 25, 23, 0.04) 1px, transparent 0);
-      background-size: 24px 24px;
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
     }
-
-    /* Smooth transitions */
-    .smooth-transition {
-      transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    .card-claude {
+      background: #FFFFFF;
+      border: 1px solid #E5E2DA;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .card-claude:hover {
+      border-color: #C15F3D;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.05);
+    }
+    .pill-link {
+      background: #ECE9E1;
+      border: 1px solid #D5D0C5;
+      transition: all 0.15s ease;
+    }
+    .pill-link:hover {
+      background: #E2DFD6;
+      border-color: #BDB7AA;
     }
   </style>
 </head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-[#C15F3D] selection:text-white">
 
-<body class="min-h-screen paper-texture flex flex-col justify-between selection:bg-parchment-charcoal selection:text-parchment">
+  <!-- Main Content Container -->
+  <main class="max-w-5xl mx-auto px-6 py-12 md:py-16 w-full">
 
-  <!-- Top Sticky Ambient Header -->
-  <header class="sticky top-0 z-40 backdrop-blur-md bg-parchment/85 border-b border-parchment-border">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <span class="w-2.5 h-2.5 rounded-full bg-parchment-clay animate-pulse"></span>
-        <a href="#" class="font-serif text-lg font-medium tracking-tight text-parchment-charcoal hover:opacity-80 transition-opacity">
-          meoponly<span class="font-mono text-xs text-parchment-muted ml-1 font-normal">.is-a.dev</span>
-        </a>
-      </div>
-
-      <nav class="flex items-center gap-2 sm:gap-4 text-xs font-medium">
-        <a href="#projects" class="px-3 py-1.5 rounded-full text-parchment-body hover:text-parchment-charcoal hover:bg-parchment-deep smooth-transition">
-          Projects
-        </a>
-        <a href="#stack" class="px-3 py-1.5 rounded-full text-parchment-body hover:text-parchment-charcoal hover:bg-parchment-deep smooth-transition">
-          Stack
-        </a>
-        <a href="#terminal" class="hidden sm:inline-block px-3 py-1.5 rounded-full text-parchment-body hover:text-parchment-charcoal hover:bg-parchment-deep smooth-transition">
-          CLI
-        </a>
-        <button
-          onclick="copyToClipboard('meoponly@is-a.dev', 'Email copied to clipboard!')"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-parchment-charcoal text-parchment hover:bg-parchment-clay smooth-transition shadow-subtle"
+    <!-- Profile Header -->
+    <header class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-10 border-b border-[#E2DFD8]">
+      <div class="flex items-center gap-5">
+        <img 
+          src="https://github.com/meoponly.png" 
+          alt="meoponly profile" 
+          class="w-20 h-20 rounded-full border-2 border-[#D5D0C5] shadow-xs object-cover"
+          onerror="this.src='https://ui-avatars.com/api/?name=meoponly&background=C15F3D&color=fff&size=128'"
         >
-          <i class="fa-regular fa-envelope text-[11px]"></i>
-          <span>Get in Touch</span>
-        </button>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Main Container -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-16">
-
-    <!-- HERO & PROFILE SECTION -->
-    <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <!-- Left Hero Column (Profile & Bio) -->
-      <div class="lg:col-span-8 space-y-6">
-        
-        <!-- Live Status Pill -->
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-parchment-card border border-parchment-border shadow-subtle text-xs font-mono text-parchment-body">
-          <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
-          <span>Open for collaborative builds & open-source tools</span>
-        </div>
-
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-          <!-- Profile Avatar with dynamic fallback -->
-          <div class="relative shrink-0 group">
-            <img
-              src="https://github.com/meoponly.png"
-              alt="meoponly profile picture"
-              onerror="this.onerror=null; this.src='https://placehold.co/180x180/1A1917/F5F5F0?text=M';"
-              class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border-2 border-parchment-border shadow-elevated bg-parchment-card group-hover:scale-[1.02] smooth-transition"
-            />
-            <span class="absolute -bottom-1 -right-1 bg-parchment-charcoal text-parchment text-[10px] font-mono px-2 py-0.5 rounded-md border border-parchment-border">
-              dev
-            </span>
-          </div>
-
-          <div>
-            <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-parchment-charcoal leading-none">
-              meoponly
-            </h1>
-            <p class="font-serif italic text-xl sm:text-2xl text-parchment-clay mt-1">
-              Builder, student & open-source craftsman
-            </p>
-          </div>
-        </div>
-
-        <p class="text-base sm:text-lg text-parchment-body max-w-2xl leading-relaxed font-normal">
-          Designing minimalist digital experiences, web tools, and curated educational resources. Focused on lightweight code, distraction-free interfaces, and solving pragmatic problems.
-        </p>
-
-        <!-- Social Links & Action Hub -->
-        <div class="flex flex-wrap items-center gap-2.5 pt-2">
-          <!-- GitHub -->
-          <a
-            href="https://github.com/meoponly"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium bg-parchment-card hover:bg-parchment-charcoal hover:text-parchment text-parchment-charcoal border border-parchment-border shadow-subtle hover:shadow-elevated smooth-transition"
-          >
-            <i class="fa-brands fa-github text-sm"></i>
-            <span>@meoponly</span>
-          </a>
-
-          <!-- Telegram -->
-          <a
-            href="https://t.me/meoponly"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium bg-parchment-card hover:bg-[#229ED9] hover:text-white hover:border-[#229ED9] text-parchment-charcoal border border-parchment-border shadow-subtle hover:shadow-elevated smooth-transition"
-          >
-            <i class="fa-brands fa-telegram text-sm"></i>
-            <span>Telegram</span>
-          </a>
-
-          <!-- YouTube -->
-          <a
-            href="https://youtube.com/@meoponly"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium bg-parchment-card hover:bg-[#FF0000] hover:text-white hover:border-[#FF0000] text-parchment-charcoal border border-parchment-border shadow-subtle hover:shadow-elevated smooth-transition"
-          >
-            <i class="fa-brands fa-youtube text-sm"></i>
-            <span>YouTube</span>
-          </a>
-
-          <!-- Quick Copy Handle -->
-          <button
-            onclick="copyToClipboard('meoponly', 'Copied handle @meoponly!')"
-            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-mono text-parchment-muted hover:text-parchment-charcoal bg-parchment-sand border border-parchment-border hover:bg-parchment-deep smooth-transition"
-            title="Click to copy handle"
-          >
-            <i class="fa-regular fa-copy text-xs"></i>
-            <span>Copy handle</span>
-          </button>
-        </div>
-
-      </div>
-
-      <!-- Right Column: Interactive "Now" Card & Stats -->
-      <div class="lg:col-span-4 space-y-4">
-        
-        <!-- Live Micro-Feed ("Now" Card) -->
-        <div class="p-5 rounded-2xl bg-parchment-card border border-parchment-border shadow-subtle relative overflow-hidden">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-xs font-mono uppercase tracking-wider text-parchment-muted flex items-center gap-1.5">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              Current Status / Now
-            </span>
-            <span class="text-[11px] font-mono text-parchment-muted">v2.4</span>
-          </div>
-          <p class="text-sm text-parchment-charcoal leading-relaxed font-medium">
-            Polishing <strong class="text-parchment-clay font-semibold">ewtube</strong> for distraction-free video playback & compiling high-yield problem sets on <strong class="text-parchment-charcoal font-semibold">IOQM Pro</strong>.
-          </p>
-          <div class="mt-3 pt-3 border-t border-parchment-border/70 flex items-center justify-between text-xs text-parchment-muted font-mono">
-            <span>Location: India</span>
-            <span>Focus: Web Performance</span>
-          </div>
-        </div>
-
-        <!-- Metrics Grid -->
-        <div class="grid grid-cols-3 gap-3">
-          <div class="p-4 rounded-xl bg-parchment-card border border-parchment-border text-center shadow-subtle">
-            <span class="block font-serif text-2xl font-normal text-parchment-charcoal">06+</span>
-            <span class="text-[11px] font-mono text-parchment-muted uppercase tracking-wider">Projects</span>
-          </div>
-          <div class="p-4 rounded-xl bg-parchment-card border border-parchment-border text-center shadow-subtle">
-            <span class="block font-serif text-2xl font-normal text-parchment-clay">100%</span>
-            <span class="text-[11px] font-mono text-parchment-muted uppercase tracking-wider">Free / Open</span>
-          </div>
-          <div class="p-4 rounded-xl bg-parchment-card border border-parchment-border text-center shadow-subtle">
-            <span class="block font-serif text-2xl font-normal text-emerald-700">24/7</span>
-            <span class="text-[11px] font-mono text-parchment-muted uppercase tracking-wider">Hosted</span>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- TECH STACK SHELF -->
-    <section id="stack" class="pt-4 border-t border-parchment-border">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
         <div>
-          <h2 class="font-serif text-2xl font-normal text-parchment-charcoal">
-            Selected Tech Shelf
-          </h2>
-          <p class="text-xs text-parchment-muted font-mono mt-0.5">
-            Tools, languages, and platforms utilized across active repositories
+          <div class="flex items-center gap-3">
+            <h1 class="text-3xl md:text-4xl font-serif-claude font-normal tracking-tight text-[#1E1E1E]">meoponly</h1>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono-code bg-[#EAE7DF] text-[#635E55] border border-[#DDD8CD]">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> student & builder
+            </span>
+          </div>
+          <p class="text-sm md:text-base text-[#615C53] mt-1 font-serif-claude italic">
+            Curious student exploring software, crafting minimal web apps & open tools.
           </p>
         </div>
       </div>
 
-      <!-- Skills Pill Cloud with interactive hover tooltips -->
-      <div class="flex flex-wrap gap-2.5">
-        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-parchment-card border border-parchment-border text-xs font-mono text-parchment-charcoal shadow-subtle hover:border-parchment-charcoal smooth-transition">
-          <i class="fa-brands fa-html5 text-[#E34F26]"></i> HTML5 & Semantic UI
-        </span>
-        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-parchment-card border border-parchment-border text-xs font-mono text-parchment-charcoal shadow-subtle hover:border-parchment-charcoal smooth-transition">
-          <i class="fa-brands fa-css3-alt text-[#1572B6]"></i> Tailwind CSS
-        </span>
-        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-parchment-card border border-parchment-border text-xs font-mono text-parchment-charcoal shadow-subtle hover:border-parchment-charcoal smooth-transition">
-          <i class="fa-brands fa-js text-[#F7DF1E]"></i> Modern JavaScript
-        </span>
-        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-parchment-card border border-parchment-border text-xs font-mono text-parchment-charcoal shadow-subtle hover:border-parchment-charcoal smooth-transition">
-          <i class="fa-brands fa-git-alt text-[#F05032]"></i> Git & GitHub Pages
-        </span>
-        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-parchment-card border border-parchment-border text-xs font-mono text-parchment-charcoal shadow-subtle hover:border-parchment-charcoal smooth-transition">
-          <i class="fa-solid fa-cloud-arrow-up text-[#00C7B7]"></i> Netlify & Vercel
-        </span>
-        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-parchment-card border border-parchment-border text-xs font-mono text-parchment-charcoal shadow-subtle hover:border-parchment-charcoal smooth-transition">
-          <i class="fa-solid fa-terminal text-parchment-clay"></i> Bash & CLI Scripting
-        </span>
-        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-parchment-card border border-parchment-border text-xs font-mono text-parchment-charcoal shadow-subtle hover:border-parchment-charcoal smooth-transition">
-          <i class="fa-solid fa-network-wired text-parchment-charcoal"></i> REST APIs & Parsing
-        </span>
+      <!-- Social Contact Pills -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <a href="https://github.com/meoponly" target="_blank" rel="noopener" class="pill-link px-3 py-1.5 rounded-lg text-xs font-medium text-[#2E2B25] flex items-center gap-2">
+          <i class="fa-brands fa-github text-sm"></i> GitHub
+        </a>
+        <a href="https://t.me/meoponly" target="_blank" rel="noopener" class="pill-link px-3 py-1.5 rounded-lg text-xs font-medium text-[#2E2B25] flex items-center gap-2">
+          <i class="fa-brands fa-telegram text-sm"></i> Telegram
+        </a>
+        <a href="https://youtube.com/@meoponly" target="_blank" rel="noopener" class="pill-link px-3 py-1.5 rounded-lg text-xs font-medium text-[#2E2B25] flex items-center gap-2">
+          <i class="fa-brands fa-youtube text-sm text-[#C15F3D]"></i> YouTube
+        </a>
       </div>
-    </section>
+    </header>
 
-    <!-- PROJECTS SECTION: 3-COLUMNS WITH LIVE FILTERING & SEARCH -->
-    <section id="projects" class="space-y-6 pt-6 border-t border-parchment-border">
-      
-      <!-- Section Header & Filter Toolbar -->
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-5">
+    <!-- Projects Section -->
+    <section class="mt-12">
+      <div class="flex items-center justify-between mb-8">
         <div>
-          <span class="text-xs font-mono uppercase tracking-widest text-parchment-clay block mb-1">
-            Index of Works
-          </span>
-          <h2 class="font-serif text-3xl sm:text-4xl font-normal text-parchment-charcoal">
-            Featured Deployments
-          </h2>
+          <h2 class="text-2xl font-serif-claude font-normal text-[#1E1E1E]">Projects</h2>
+          <p class="text-xs text-[#7D786F] mt-0.5">Selected experiments, utility apps, and open-source works.</p>
         </div>
-
-        <!-- Filter Controls + Search -->
-        <div class="flex flex-wrap items-center gap-2.5">
-          <!-- Search Input -->
-          <div class="relative">
-            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-parchment-muted text-xs"></i>
-            <input
-              type="text"
-              id="project-search"
-              oninput="filterProjects()"
-              placeholder="Search builds..."
-              class="pl-8 pr-3 py-1.5 text-xs font-mono rounded-lg bg-parchment-card border border-parchment-border focus:outline-none focus:border-parchment-charcoal text-parchment-charcoal placeholder-parchment-muted w-36 sm:w-44 shadow-subtle smooth-transition"
-            />
-          </div>
-
-          <!-- Category Buttons -->
-          <div class="inline-flex p-1 bg-parchment-deep rounded-xl border border-parchment-border text-xs font-mono">
-            <button
-              class="filter-btn active px-3 py-1 rounded-lg bg-parchment-charcoal text-parchment smooth-transition"
-              onclick="setCategory('all', this)"
-            >
-              All (<span id="count-all">6</span>)
-            </button>
-            <button
-              class="filter-btn px-3 py-1 rounded-lg text-parchment-body hover:text-parchment-charcoal smooth-transition"
-              onclick="setCategory('web', this)"
-            >
-              Web Apps
-            </button>
-            <button
-              class="filter-btn px-3 py-1 rounded-lg text-parchment-body hover:text-parchment-charcoal smooth-transition"
-              onclick="setCategory('tools', this)"
-            >
-              Tools
-            </button>
-            <button
-              class="filter-btn px-3 py-1 rounded-lg text-parchment-body hover:text-parchment-charcoal smooth-transition"
-              onclick="setCategory('learning', this)"
-            >
-              Learning
-            </button>
-          </div>
-        </div>
+        <a href="/admin" class="text-xs font-mono-code text-[#948F85] hover:text-[#C15F3D] transition">
+          /admin
+        </a>
       </div>
 
-      <!-- 3-COLUMNS RESPONSIVE PROJECT GRID -->
-      <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-        <!-- PROJECT 1: IOQM Pro -->
-        <article
-          data-category="learning"
-          data-keywords="ioqm pro math lecture notes chapters olympiad education preparation study"
-          class="project-card flex flex-col justify-between p-6 rounded-2xl bg-parchment-card border border-parchment-border hover:border-parchment-charcoal/40 shadow-subtle hover:shadow-lift smooth-transition relative group"
-        >
-          <div>
-            <div class="flex items-start justify-between gap-3 mb-3">
-              <span class="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                Featured
-              </span>
-              <span class="text-xs font-mono text-parchment-muted">01 / 06</span>
-            </div>
-
-            <h3 class="font-serif text-2xl font-medium text-parchment-charcoal group-hover:text-parchment-clay smooth-transition">
-              IOQM Pro
-            </h3>
-
-            <p class="text-sm text-parchment-body mt-2.5 leading-relaxed font-light">
-              A comprehensive, minimalist collection of chapters & lectures organized systematically for competitive IOQM mathematics preparation.
-            </p>
-          </div>
-
-          <div class="mt-6 pt-4 border-t border-parchment-border/80">
-            <div class="flex flex-wrap gap-1.5 mb-4">
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Education</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Olympiad Math</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Curated</span>
-            </div>
-
-            <div class="flex items-center justify-between gap-2">
-              <a
-                href="https://github.com/meoponly/ioqm_pro"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 text-xs font-mono text-parchment-muted hover:text-parchment-charcoal smooth-transition"
-                title="View GitHub Repository"
-              >
-                <i class="fa-brands fa-github text-sm"></i>
-                <span>Repository</span>
-              </a>
-
-              <a
-                href="https://meoponly.github.io/ioqm_pro/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-parchment-sand hover:bg-parchment-charcoal text-parchment-charcoal hover:text-parchment border border-parchment-border smooth-transition"
-              >
-                <span>Live Site</span>
-                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <!-- PROJECT 2: pwmate -->
-        <article
-          data-category="tools"
-          data-keywords="pwmate coupon discounts promo pw savings tool vouchers batches discount"
-          class="project-card flex flex-col justify-between p-6 rounded-2xl bg-parchment-card border border-parchment-border hover:border-parchment-charcoal/40 shadow-subtle hover:shadow-lift smooth-transition relative group"
-        >
-          <div>
-            <div class="flex items-start justify-between gap-3 mb-3">
-              <span class="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
-                <i class="fa-solid fa-bolt text-[10px]"></i>
-                Savings Tool
-              </span>
-              <span class="text-xs font-mono text-parchment-muted">02 / 06</span>
-            </div>
-
-            <h3 class="font-serif text-2xl font-medium text-parchment-charcoal group-hover:text-parchment-clay smooth-transition">
-              pwmate
-            </h3>
-
-            <p class="text-sm text-parchment-body mt-2.5 leading-relaxed font-light">
-              Free PW discount coupon engine that automatically collects and surfaces active promo codes for maximum course discounts.
-            </p>
-          </div>
-
-          <div class="mt-6 pt-4 border-t border-parchment-border/80">
-            <div class="flex flex-wrap gap-1.5 mb-4">
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Web Tool</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Coupons</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Discounts</span>
-            </div>
-
-            <div class="flex items-center justify-between gap-2">
-              <span class="text-xs font-mono text-parchment-muted flex items-center gap-1">
-                <i class="fa-solid fa-server text-[10px]"></i> Netlify App
-              </span>
-
-              <a
-                href="https://pw-mate.netlify.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-parchment-sand hover:bg-parchment-charcoal text-parchment-charcoal hover:text-parchment border border-parchment-border smooth-transition"
-              >
-                <span>Launch Tool</span>
-                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <!-- PROJECT 3: pw pirates -->
-        <article
-          data-category="web"
-          data-keywords="pw pirates deadpool movies streaming cinema films player media entertainment"
-          class="project-card flex flex-col justify-between p-6 rounded-2xl bg-parchment-card border border-parchment-border hover:border-parchment-charcoal/40 shadow-subtle hover:shadow-lift smooth-transition relative group"
-        >
-          <div>
-            <div class="flex items-start justify-between gap-3 mb-3">
-              <span class="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200">
-                <i class="fa-solid fa-film text-[10px]"></i>
-                Streaming Hub
-              </span>
-              <span class="text-xs font-mono text-parchment-muted">03 / 06</span>
-            </div>
-
-            <h3 class="font-serif text-2xl font-medium text-parchment-charcoal group-hover:text-parchment-clay smooth-transition">
-              pw pirates
-            </h3>
-
-            <p class="text-sm text-parchment-body mt-2.5 leading-relaxed font-light">
-              Ad-free streaming cinema index and film player with organized titles, quick playback sources, and clean viewing navigation.
-            </p>
-          </div>
-
-          <div class="mt-6 pt-4 border-t border-parchment-border/80">
-            <div class="flex flex-wrap gap-1.5 mb-4">
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Movies</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Streaming</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Vercel</span>
-            </div>
-
-            <div class="flex items-center justify-between gap-2">
-              <a
-                href="https://github.com/meoponly/deadpool-movies"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 text-xs font-mono text-parchment-muted hover:text-parchment-charcoal smooth-transition"
-                title="View GitHub Repository"
-              >
-                <i class="fa-brands fa-github text-sm"></i>
-                <span>Repository</span>
-              </a>
-
-              <a
-                href="https://deadpool-pirates.vercel.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-parchment-sand hover:bg-parchment-charcoal text-parchment-charcoal hover:text-parchment border border-parchment-border smooth-transition"
-              >
-                <span>Live Site</span>
-                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <!-- PROJECT 4: ewtube -->
-        <article
-          data-category="web"
-          data-keywords="ewtube youtube video minimalist distraction free player clean client adfree"
-          class="project-card flex flex-col justify-between p-6 rounded-2xl bg-parchment-card border border-parchment-border hover:border-parchment-charcoal/40 shadow-subtle hover:shadow-lift smooth-transition relative group"
-        >
-          <div>
-            <div class="flex items-start justify-between gap-3 mb-3">
-              <span class="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-800 border border-purple-200">
-                <i class="fa-solid fa-circle-play text-[10px]"></i>
-                Video Player
-              </span>
-              <span class="text-xs font-mono text-parchment-muted">04 / 06</span>
-            </div>
-
-            <h3 class="font-serif text-2xl font-medium text-parchment-charcoal group-hover:text-parchment-clay smooth-transition">
-              ewtube
-            </h3>
-
-            <p class="text-sm text-parchment-body mt-2.5 leading-relaxed font-light">
-              Minimalist, distraction-free YouTube alternative web interface stripping away algorithmic feeds, comments, and shorts for pure focus.
-            </p>
-          </div>
-
-          <div class="mt-6 pt-4 border-t border-parchment-border/80">
-            <div class="flex flex-wrap gap-1.5 mb-4">
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">YouTube</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Focus</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Web App</span>
-            </div>
-
-            <div class="flex items-center justify-between gap-2">
-              <a
-                href="https://github.com/meoponly/ewtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 text-xs font-mono text-parchment-muted hover:text-parchment-charcoal smooth-transition"
-                title="View GitHub Repository"
-              >
-                <i class="fa-brands fa-github text-sm"></i>
-                <span>Repository</span>
-              </a>
-
-              <a
-                href="https://meoponly.github.io/ewtube.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-parchment-sand hover:bg-parchment-charcoal text-parchment-charcoal hover:text-parchment border border-parchment-border smooth-transition"
-              >
-                <span>Live Site</span>
-                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <!-- PROJECT 5: yt4free -->
-        <article
-          data-category="web"
-          data-keywords="yt4free youtube premium cookie free tracker free player stream videos privacy"
-          class="project-card flex flex-col justify-between p-6 rounded-2xl bg-parchment-card border border-parchment-border hover:border-parchment-charcoal/40 shadow-subtle hover:shadow-lift smooth-transition relative group"
-        >
-          <div>
-            <div class="flex items-start justify-between gap-3 mb-3">
-              <span class="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200">
-                <i class="fa-solid fa-shield-halved text-[10px]"></i>
-                Privacy Watcher
-              </span>
-              <span class="text-xs font-mono text-parchment-muted">05 / 06</span>
-            </div>
-
-            <h3 class="font-serif text-2xl font-medium text-parchment-charcoal group-hover:text-parchment-clay smooth-transition">
-              yt4free
-            </h3>
-
-            <p class="text-sm text-parchment-body mt-2.5 leading-relaxed font-light">
-              Cookie-free, tracking-free YouTube watcher allowing fast, frictionless video playback without privacy intrusive trackers.
-            </p>
-          </div>
-
-          <div class="mt-6 pt-4 border-t border-parchment-border/80">
-            <div class="flex flex-wrap gap-1.5 mb-4">
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Privacy</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">No Cookies</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Streaming</span>
-            </div>
-
-            <div class="flex items-center justify-between gap-2">
-              <a
-                href="https://github.com/meoponly/yt-premium-4free"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 text-xs font-mono text-parchment-muted hover:text-parchment-charcoal smooth-transition"
-                title="View GitHub Repository"
-              >
-                <i class="fa-brands fa-github text-sm"></i>
-                <span>Repository</span>
-              </a>
-
-              <a
-                href="https://yt4free.vercel.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-parchment-sand hover:bg-parchment-charcoal text-parchment-charcoal hover:text-parchment border border-parchment-border smooth-transition"
-              >
-                <span>Live Site</span>
-                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-              </a>
-            </div>
-          </div>
-        </article>
-
-        <!-- PROJECT 6: pseudomation -->
-        <article
-          data-category="tools"
-          data-keywords="pseudomation study tracker pomodoro timer session productivity minimalist student"
-          class="project-card flex flex-col justify-between p-6 rounded-2xl bg-parchment-card border border-parchment-border hover:border-parchment-charcoal/40 shadow-subtle hover:shadow-lift smooth-transition relative group"
-        >
-          <div>
-            <div class="flex items-start justify-between gap-3 mb-3">
-              <span class="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-800 border border-stone-300">
-                <i class="fa-regular fa-clock text-[10px]"></i>
-                Productivity
-              </span>
-              <span class="text-xs font-mono text-parchment-muted">06 / 06</span>
-            </div>
-
-            <h3 class="font-serif text-2xl font-medium text-parchment-charcoal group-hover:text-parchment-clay smooth-transition">
-              pseudomation
-            </h3>
-
-            <p class="text-sm text-parchment-body mt-2.5 leading-relaxed font-light">
-              Minimalist, aesthetic study session tracker built to log deep work hours, maintain focus routines, and quantify daily learning momentum.
-            </p>
-          </div>
-
-          <div class="mt-6 pt-4 border-t border-parchment-border/80">
-            <div class="flex flex-wrap gap-1.5 mb-4">
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Study Tracker</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Minimalist</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Productivity</span>
-            </div>
-
-            <div class="flex items-center justify-between gap-2">
-              <a
-                href="https://github.com/meoponly/nothing"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 text-xs font-mono text-parchment-muted hover:text-parchment-charcoal smooth-transition"
-                title="View GitHub Repository"
-              >
-                <i class="fa-brands fa-github text-sm"></i>
-                <span>Repository</span>
-              </a>
-
-              <a
-                href="https://pseudomation.vercel.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-parchment-sand hover:bg-parchment-charcoal text-parchment-charcoal hover:text-parchment border border-parchment-border smooth-transition"
-              >
-                <span>Live Site</span>
-                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-              </a>
-            </div>
-          </div>
-        </article>
-
-      </div>
-
-      <!-- No Results Feedback Message -->
-      <div id="no-results" class="hidden p-10 rounded-2xl bg-parchment-card border border-dashed border-parchment-border text-center">
-        <i class="fa-regular fa-folder-open text-2xl text-parchment-muted mb-2"></i>
-        <p class="text-sm font-medium text-parchment-charcoal">No projects matched your criteria.</p>
-        <p class="text-xs text-parchment-muted mt-1">Try clearing your search term or selecting "All".</p>
-      </div>
-
-    </section>
-
-    <!-- DEVELOPER CLI / QUICK INSPECT DRAWER -->
-    <section id="terminal" class="pt-6 border-t border-parchment-border">
-      <div class="p-6 sm:p-8 rounded-2xl bg-[#1C1B18] text-[#E5E4DF] shadow-elevated border border-[#33322D]">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-[#2C2B26]">
-          <div class="flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full bg-[#FF5F56]"></span>
-            <span class="w-3 h-3 rounded-full bg-[#FFBD2E]"></span>
-            <span class="w-3 h-3 rounded-full bg-[#27C93F]"></span>
-            <span class="ml-2 font-mono text-xs text-[#8C8A82]">meoponly@is-a-dev ~ quick-inspect</span>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <button
-              onclick="copyToClipboard('curl -s https://meoponly.is-a.dev/status', 'CLI command copied!')"
-              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#2B2A25] hover:bg-[#3B3A33] text-xs font-mono text-[#D4D2CA] smooth-transition"
-            >
-              <i class="fa-regular fa-copy text-[11px]"></i>
-              <span>Copy curl</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="space-y-2 font-mono text-xs sm:text-sm">
-          <div class="text-[#8C8A82]"># Inspect live developer metadata via your terminal:</div>
-          <div class="flex items-center gap-2 text-parchment-sand">
-            <span class="text-parchment-clay font-bold">$</span>
-            <span class="text-[#E5E4DF]">curl -s https://meoponly.is-a.dev/status</span>
-          </div>
-          <div class="pt-2 text-[#9A988E] text-[11px] sm:text-xs leading-relaxed">
-            {<br/>
-            &nbsp;&nbsp;<span class="text-[#E2B77B]">"handle"</span>: <span class="text-[#A5C261]">"meoponly"</span>,<br/>
-            &nbsp;&nbsp;<span class="text-[#E2B77B]">"role"</span>: <span class="text-[#A5C261]">"Full-stack Web Developer & Math Student"</span>,<br/>
-            &nbsp;&nbsp;<span class="text-[#E2B77B]">"featured"</span>: [<span class="text-[#A5C261]">"IOQM Pro"</span>, <span class="text-[#A5C261]">"pwmate"</span>, <span class="text-[#A5C261]">"pw pirates"</span>, <span class="text-[#A5C261]">"ewtube"</span>],<br/>
-            &nbsp;&nbsp;<span class="text-[#E2B77B]">"subdomain"</span>: <span class="text-[#A5C261]">"meoponly.is-a.dev"</span>,<br/>
-            &nbsp;&nbsp;<span class="text-[#E2B77B]">"status"</span>: <span class="text-[#A5C261]">"available_for_collaborations"</span><br/>
-            }
-          </div>
-        </div>
+      <!-- 3-Column Project Grid -->
+      <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Rendered dynamically from Firebase or static fallback -->
       </div>
     </section>
 
   </main>
 
-  <!-- ELEVATED FOOTER -->
-  <footer class="mt-20 border-t border-parchment-border bg-parchment-sand">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-parchment-muted font-mono">
-      <div class="flex items-center gap-3">
-        <span class="font-serif text-base text-parchment-charcoal font-medium">meoponly</span>
-        <span>—</span>
-        <span>Hosted via GitHub Pages & is-a.dev DNS</span>
-      </div>
-
-      <div class="flex items-center gap-5">
-        <a href="https://github.com/meoponly" target="_blank" rel="noopener noreferrer" class="hover:text-parchment-charcoal smooth-transition">GitHub</a>
-        <a href="https://t.me/meoponly" target="_blank" rel="noopener noreferrer" class="hover:text-parchment-charcoal smooth-transition">Telegram</a>
-        <a href="https://youtube.com/@meoponly" target="_blank" rel="noopener noreferrer" class="hover:text-parchment-charcoal smooth-transition">YouTube</a>
-        <button
-          onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
-          class="inline-flex items-center gap-1 hover:text-parchment-charcoal smooth-transition ml-2"
-        >
-          <span>Top</span>
-          <i class="fa-solid fa-arrow-up text-[10px]"></i>
-        </button>
-      </div>
+  <!-- Clean Signature Footer -->
+  <footer class="border-t border-[#E2DFD8] py-8 mt-16 text-center text-xs text-[#7A756D]">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-3">
+      <p class="font-serif-claude italic text-sm text-[#545048]">
+        "Crafting ideas one commit at a time."
+      </p>
+      <p class="font-mono-code text-[11px] text-[#918B80]">
+        &copy; 2026 meoponly • All rights reserved
+      </p>
     </div>
   </footer>
 
-  <!-- TOAST NOTIFICATION CONTAINER -->
-  <div
-    id="toast"
-    class="fixed bottom-6 right-6 z-50 transform translate-y-16 opacity-0 transition-all duration-300 pointer-events-none"
-  >
-    <div class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-parchment-charcoal text-parchment shadow-elevated border border-parchment-border/40 text-xs font-mono">
-      <i class="fa-solid fa-circle-check text-emerald-400"></i>
-      <span id="toast-message">Copied to clipboard</span>
-    </div>
-  </div>
+  <!-- Firebase Integration Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
-  <!-- JAVASCRIPT: FILTERING, SEARCH, CLIPBOARD -->
-  <script>
-    let activeCategory = 'all';
+    // REPLACE WITH YOUR ACTUAL FIREBASE CONFIG KEYS
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_DATABASE_NAME.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-    // Clipboard copy with visual toast feedback
-    function copyToClipboard(text, message = 'Copied to clipboard!') {
-      try {
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        textarea.setAttribute('readonly', '');
-        textarea.style.position = 'absolute';
-        textarea.style.left = '-9999px';
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-
-        showToast(message);
-      } catch (err) {
-        showToast('Selection copied');
+    // Default static projects fallback
+    const fallbackProjects = [
+      {
+        title: "IOQM Pro",
+        desc: "A comprehensive, minimalist collection of chapters & lectures for IOQM preparation.",
+        link: "https://meoponly.github.io/ioqm_pro/",
+        repo: "https://github.com/meoponly",
+        tags: ["Education", "Minimalist"]
+      },
+      {
+        title: "pwmate",
+        desc: "Free PhysicsWallah coupons aggregator for unlocking maximum course discounts.",
+        link: "https://pw-mate.netlify.app/",
+        repo: "",
+        tags: ["Utility", "Coupons"]
+      },
+      {
+        title: "pw pirates",
+        desc: "Curated open-web movie catalog with a clean, responsive streaming interface.",
+        link: "https://deadpool-pirates.vercel.app/",
+        repo: "https://github.com/meoponly/deadpool-movies",
+        tags: ["Web App", "Media"]
+      },
+      {
+        title: "ewtube",
+        desc: "Clean, distraction-free YouTube alternative web interface.",
+        link: "https://meoponly.github.io/ewtube.com/",
+        repo: "https://github.com/meoponly/ewtube.com",
+        tags: ["Web App"]
+      },
+      {
+        title: "yt4free",
+        desc: "Cookie-free YouTube watcher for seamless, privacy-centric playback.",
+        link: "https://yt4free.vercel.app/",
+        repo: "https://github.com/meoponly/yt-premium-4free",
+        tags: ["Privacy", "Video"]
+      },
+      {
+        title: "pseudomation",
+        desc: "Minimalist study tracker designed to keep focus clean and measured.",
+        link: "https://pseudomation.vercel.app/",
+        repo: "https://github.com/meoponly/nothing",
+        tags: ["Productivity"]
       }
+    ];
+
+    const grid = document.getElementById('projects-grid');
+
+    function renderCards(projects) {
+      grid.innerHTML = projects.map(p => `
+        <div class="card-claude p-5 rounded-2xl flex flex-col justify-between h-full">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <h3 class="text-base font-semibold text-[#1E1E1E] tracking-tight">${p.title}</h3>
+              <div class="flex items-center gap-2.5">
+                ${p.repo ? `<a href="${p.repo}" target="_blank" rel="noopener" class="text-[#878279] hover:text-[#1E1E1E] text-sm transition" title="GitHub Repo"><i class="fa-brands fa-github"></i></a>` : ''}
+                ${p.link ? `<a href="${p.link}" target="_blank" rel="noopener" class="text-[#878279] hover:text-[#C15F3D] text-xs transition" title="Live Preview"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>` : ''}
+              </div>
+            </div>
+            <p class="text-xs leading-relaxed text-[#5A554D] mb-4">${p.desc}</p>
+          </div>
+
+          <div class="pt-3 border-t border-[#F0ECE1] flex items-center justify-between">
+            <div class="flex flex-wrap gap-1.5">
+              ${(p.tags || []).map(t => `<span class="text-[10px] font-mono-code px-2 py-0.5 rounded bg-[#F4F1EA] text-[#6D675E]">${t}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('');
     }
 
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      const toastMsg = document.getElementById('toast-message');
-      toastMsg.textContent = msg;
+    // Try fetching live entries from Firebase Realtime Database
+    try {
+      if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY") {
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const projectsRef = ref(db, 'projects');
 
-      toast.classList.remove('translate-y-16', 'opacity-0');
-      toast.classList.add('translate-y-0', 'opacity-100');
-
-      setTimeout(() => {
-        toast.classList.add('translate-y-16', 'opacity-0');
-        toast.classList.remove('translate-y-0', 'opacity-100');
-      }, 2600);
-    }
-
-    // Category Selector
-    function setCategory(category, buttonElement) {
-      activeCategory = category;
-
-      // Update button styling
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.remove('bg-parchment-charcoal', 'text-parchment');
-        btn.classList.add('text-parchment-body');
-      });
-
-      buttonElement.classList.add('bg-parchment-charcoal', 'text-parchment');
-      buttonElement.classList.remove('text-parchment-body');
-
-      filterProjects();
-    }
-
-    // Combined search and category filtering
-    function filterProjects() {
-      const searchInput = document.getElementById('project-search');
-      const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
-      const cards = document.querySelectorAll('.project-card');
-      let visibleCount = 0;
-
-      cards.forEach(card => {
-        const cardCategory = card.getAttribute('data-category');
-        const keywords = card.getAttribute('data-keywords') || '';
-        const title = card.querySelector('h3') ? card.querySelector('h3').textContent.toLowerCase() : '';
-        const desc = card.querySelector('p') ? card.querySelector('p').textContent.toLowerCase() : '';
-
-        const matchesCategory = activeCategory === 'all' || cardCategory === activeCategory;
-        const matchesQuery = query === '' || 
-                             keywords.includes(query) || 
-                             title.includes(query) || 
-                             desc.includes(query);
-
-        if (matchesCategory && matchesQuery) {
-          card.classList.remove('hidden');
-          visibleCount++;
-        } else {
-          card.classList.add('hidden');
-        }
-      });
-
-      const noResults = document.getElementById('no-results');
-      if (visibleCount === 0) {
-        noResults.classList.remove('hidden');
+        onValue(projectsRef, (snapshot) => {
+          const val = snapshot.val();
+          if (val) {
+            const list = Object.entries(val).map(([id, item]) => ({ id, ...item }));
+            list.sort((a, b) => (Number(a.order) || 99) - (Number(b.order) || 99));
+            renderCards(list);
+          } else {
+            renderCards(fallbackProjects);
+          }
+        }, () => renderCards(fallbackProjects));
       } else {
-        noResults.classList.add('hidden');
+        renderCards(fallbackProjects);
       }
+    } catch (err) {
+      console.warn("Using fallback local projects:", err);
+      renderCards(fallbackProjects);
     }
-
-    // Initialize counts on page load
-    window.addEventListener('DOMContentLoaded', () => {
-      const totalProjects = document.querySelectorAll('.project-card').length;
-      const countEl = document.getElementById('count-all');
-      if (countEl) countEl.textContent = totalProjects;
-    });
   </script>
 </body>
 </html>
