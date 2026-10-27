@@ -146,42 +146,48 @@
         desc: "A comprehensive, minimalist collection of chapters & lectures for IOQM preparation.",
         link: "https://meoponly.github.io/ioqm_pro/",
         repo: "https://github.com/meoponly",
-        tags: ["Education", "Minimalist"]
+        tags: ["Education", "Minimalist"],
+        order: 1
       },
       {
         title: "pwmate",
         desc: "Free PhysicsWallah coupons aggregator for unlocking maximum course discounts.",
         link: "https://pw-mate.netlify.app/",
         repo: "",
-        tags: ["Utility", "Coupons"]
+        tags: ["Utility", "Coupons"],
+        order: 2
       },
       {
         title: "pw pirates",
         desc: "Curated open-web movie catalog with a clean, responsive streaming interface.",
         link: "https://deadpool-pirates.vercel.app/",
         repo: "https://github.com/meoponly/deadpool-movies",
-        tags: ["Web App", "Media"]
+        tags: ["Web App", "Media"],
+        order: 3
       },
       {
         title: "ewtube",
         desc: "Clean, distraction-free YouTube alternative web interface.",
         link: "https://meoponly.github.io/ewtube.com/",
         repo: "https://github.com/meoponly/ewtube.com",
-        tags: ["Web App"]
+        tags: ["Web App"],
+        order: 4
       },
       {
         title: "yt4free",
         desc: "Cookie-free YouTube watcher for seamless, privacy-centric playback.",
         link: "https://yt4free.vercel.app/",
         repo: "https://github.com/meoponly/yt-premium-4free",
-        tags: ["Privacy", "Video"]
+        tags: ["Privacy", "Video"],
+        order: 5
       },
       {
         title: "pseudomation",
         desc: "Minimalist study tracker designed to keep focus clean and measured.",
         link: "https://pseudomation.vercel.app/",
         repo: "https://github.com/meoponly/nothing",
-        tags: ["Productivity"]
+        tags: ["Productivity"],
+        order: 6
       }
     ];
 
@@ -219,7 +225,11 @@
         const val = snapshot.val();
         if (val) {
           const list = Object.entries(val).map(([id, item]) => ({ id, ...item }));
-          list.sort((a, b) => (Number(a.order) || 99) - (Number(b.order) || 99));
+          list.sort((a, b) => {
+            const orderA = Number(a.order) || 999;
+            const orderB = Number(b.order) || 999;
+            return orderA !== orderB ? orderA - orderB : a.id.localeCompare(b.id);
+          });
           renderCards(list);
         } else {
           renderCards(fallbackProjects);
