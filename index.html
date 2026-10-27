@@ -3,715 +3,870 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>meoponly | Full-Stack Tinkerer & Web Developer</title>
-  <meta name="description" content="Personal developer portfolio of meoponly. Showcasing web applications, user scripts, frontend interfaces, and developer utilities." />
-  
-  <!-- Google Fonts: Inter & JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  
+  <title>meoponly — Systems & Web Engineering</title>
+
+  <!-- Favicon & Touch Icons -->
+  <link rel="icon" type="image/png" sizes="64x64" href="https://github.com/meoponly.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="https://github.com/meoponly.png" />
+  <!-- Inline SVG fallback favicon (Warm Claude Parchment & Terracotta seal 'M') -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231A1917'/%3E%3Crect x='2' y='2' width='28' height='28' rx='5' fill='%23F5F5F0' stroke='%23C15F3D' stroke-width='1.5'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia, serif' font-weight='600' font-size='18' fill='%23C15F3D'%3EM%3C/text%3E%3C/svg%3E" />
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Newsreader (Editorial Serif) + Plus Jakarta Sans (Clean Body) + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- FontAwesome 6 Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    referrerpolicy="no-referrer"
+  />
+
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
           colors: {
-            brand: {
-              violet: '#8b5cf6',
-              cyan: '#06b6d4',
-              indigo: '#6366f1',
-            }
+            parchment: {
+              DEFAULT: '#F5F5F0',
+              deep: '#EDECE5',
+              border: '#E2E0D6',
+              borderDark: '#D4D0C2',
+              card: '#FCFCF9',
+              cardHover: '#FFFFFF',
+              charcoal: '#1A1917',
+              body: '#3A3834',
+              muted: '#706E66',
+              clay: '#C15F3D',
+              clayHover: '#A84E30',
+              sand: '#FAF9F5',
+            },
           },
-          animation: {
-            'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            'float': 'float 6s ease-in-out infinite',
+          fontFamily: {
+            serif: ['"Newsreader"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
           },
-          keyframes: {
-            float: {
-              '0%, 100%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-10px)' },
-            }
-          }
-        }
-      }
-    }
+          boxShadow: {
+            subtle: '0 1px 3px rgba(26,25,23,0.04), 0 1px 2px rgba(26,25,23,0.02)',
+            elevated: '0 10px 30px -10px rgba(26,25,23,0.08), 0 4px 6px -2px rgba(26,25,23,0.03)',
+            lift: '0 16px 36px -12px rgba(26,25,23,0.12), 0 6px 12px -3px rgba(26,25,23,0.05)',
+          },
+        },
+      },
+    };
   </script>
 
   <style>
-    /* Glassmorphism background layers */
-    .glass-nav {
-      background: rgba(10, 15, 29, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+    body {
+      background-color: #F5F5F0;
+      color: #3A3834;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
     }
-    .glass-card {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+    ::selection {
+      background-color: #1A1917;
+      color: #F5F5F0;
     }
-    .glass-card:hover {
-      border-color: rgba(99, 102, 241, 0.4);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.15);
+
+    /* Subtle paper texture overlay */
+    .paper-texture {
+      background-image: radial-gradient(rgba(26, 25, 23, 0.04) 1px, transparent 0);
+      background-size: 24px 24px;
     }
-    /* Glow highlights */
-    .glow-indigo {
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0) 70%);
-    }
-    .glow-cyan {
-      background: radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, rgba(6, 182, 212, 0) 70%);
-    }
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 7px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #030712;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #1f2937;
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #374151;
+
+    /* Smooth transitions */
+    .smooth-transition {
+      transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
     }
   </style>
 </head>
 
-<body class="bg-[#040711] text-slate-200 font-sans selection:bg-indigo-500/30 selection:text-indigo-200 relative overflow-x-hidden min-h-screen">
+<body class="min-h-screen paper-texture flex flex-col justify-between selection:bg-parchment-charcoal selection:text-parchment">
 
-  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-    <div class="absolute -top-40 left-1/4 w-[520px] h-[520px] glow-indigo rounded-full blur-3xl animate-pulse-subtle"></div>
-    <div class="absolute top-1/3 -right-20 w-[450px] h-[450px] glow-cyan rounded-full blur-3xl"></div>
-    <div class="absolute bottom-10 left-10 w-[500px] h-[500px] glow-indigo rounded-full blur-3xl opacity-40"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none opacity-60"></div>
-  </div>
-
-  <header class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
-    <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-3">
-      <div class="glass-nav border border-white/10 rounded-2xl px-5 py-3.5 flex items-center justify-between shadow-2xl">
-        <!-- Logo -->
-        <a href="#hero" class="flex items-center gap-2.5 group">
-          <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-cyan-400 p-[1px] shadow-sm">
-            <div class="w-full h-full bg-slate-950 rounded-[7px] flex items-center justify-center font-mono font-bold text-sm text-indigo-300 group-hover:text-white transition">
-              m_
-            </div>
-          </div>
-          <span class="font-bold text-base tracking-tight text-white flex items-center gap-2">
-            meoponly
-            <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping mr-1"></span>
-              dev
-            </span>
-          </span>
+  <!-- Top Sticky Ambient Header -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-parchment/85 border-b border-parchment-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="w-2.5 h-2.5 rounded-full bg-parchment-clay animate-pulse"></span>
+        <a href="#" class="font-serif text-lg font-medium tracking-tight text-parchment-charcoal hover:opacity-80 transition-opacity">
+          meoponly<span class="font-mono text-xs text-parchment-muted ml-1 font-normal">.is-a.dev</span>
         </a>
-
-        <!-- Desktop Navigation Links -->
-        <div class="hidden md:flex items-center gap-7 text-sm font-medium text-slate-300">
-          <a href="#about" class="hover:text-white hover:text-indigo-400 transition">About</a>
-          <a href="#stack" class="hover:text-white hover:text-indigo-400 transition">Stack</a>
-          <a href="#projects" class="hover:text-white hover:text-indigo-400 transition">Projects</a>
-          <a href="#terminal" class="hover:text-white hover:text-indigo-400 transition">Terminal</a>
-          <a href="#contact" class="hover:text-white hover:text-indigo-400 transition">Contact</a>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="flex items-center gap-3">
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-mono bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 transition">
-            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            GitHub
-          </a>
-          <a href="#contact" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition">
-            Let's Talk
-          </a>
-        </div>
       </div>
-    </nav>
+
+      <nav class="flex items-center gap-2 sm:gap-4 text-xs font-medium">
+        <a href="#projects" class="px-3 py-1.5 rounded-full text-parchment-body hover:text-parchment-charcoal hover:bg-parchment-deep smooth-transition">
+          Projects
+        </a>
+        <a href="#stack" class="px-3 py-1.5 rounded-full text-parchment-body hover:text-parchment-charcoal hover:bg-parchment-deep smooth-transition">
+          Stack
+        </a>
+        <a href="#terminal" class="hidden sm:inline-block px-3 py-1.5 rounded-full text-parchment-body hover:text-parchment-charcoal hover:bg-parchment-deep smooth-transition">
+          CLI
+        </a>
+        <button
+          onclick="copyToClipboard('meoponly@is-a.dev', 'Email copied to clipboard!')"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-parchment-charcoal text-parchment hover:bg-parchment-clay smooth-transition shadow-subtle"
+        >
+          <i class="fa-regular fa-envelope text-[11px]"></i>
+          <span>Get in Touch</span>
+        </button>
+      </nav>
+    </div>
   </header>
 
-  <main class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-24 space-y-28">
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-16">
 
-    <section id="hero" class="pt-10 sm:pt-16 pb-8 flex flex-col items-center text-center">
-      <!-- Status pill -->
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-indigo-500/30 text-indigo-300 text-xs font-mono mb-7 shadow-sm">
-        <span class="flex h-2 w-2 relative">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-        </span>
-        Open for collaborations & open-source projects
-      </div>
-
-      <!-- Main Title -->
-      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white max-w-4xl leading-[1.12]">
-        Crafting fast web tools &amp;
-        <span class="bg-gradient-to-r from-indigo-400 via-cyan-300 to-indigo-300 bg-clip-text text-transparent">
-          clean digital experiences.
-        </span>
-      </h1>
-
-      <!-- Subtitle -->
-      <p class="mt-6 text-base sm:text-lg text-slate-400 max-w-2xl leading-relaxed">
-        Hey, I'm <span class="text-white font-medium">meoponly</span>. A curious developer specialized in modular frontend architectures, automation userscripts, and lightweight web tools that just work.
-      </p>
-
-      <!-- CTA Buttons -->
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
-        <a href="#projects" class="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-semibold text-sm shadow-xl shadow-indigo-500/25 flex items-center gap-2 transition group">
-          Explore Projects
-          <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-        </a>
-        <a href="#terminal" class="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 font-mono text-sm transition flex items-center gap-2">
-          <span>&gt;_</span> Launch Terminal
-        </a>
-      </div>
-
-      <!-- Metric Stats Counters -->
-      <div class="mt-16 w-full max-w-3xl grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-white/10 font-mono">
-        <div class="glass-card rounded-xl p-4 text-center">
-          <div class="text-2xl font-bold text-white">20+</div>
-          <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Mini Apps & Tools</div>
-        </div>
-        <div class="glass-card rounded-xl p-4 text-center">
-          <div class="text-2xl font-bold text-indigo-400">100%</div>
-          <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Client-side Focus</div>
-        </div>
-        <div class="glass-card rounded-xl p-4 text-center">
-          <div class="text-2xl font-bold text-cyan-400">&lt;50ms</div>
-          <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Page Latency</div>
-        </div>
-        <div class="glass-card rounded-xl p-4 text-center">
-          <div class="text-2xl font-bold text-white">24/7</div>
-          <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider">GitHub Uptime</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="about" class="scroll-mt-28">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <!-- HERO & PROFILE SECTION -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Left Hero Column (Profile & Bio) -->
+      <div class="lg:col-span-8 space-y-6">
         
-        <!-- Left narrative -->
-        <div class="lg:col-span-7 space-y-5">
-          <div class="flex items-center gap-2 text-indigo-400 text-xs font-mono font-semibold tracking-wider uppercase">
-            <span class="w-2 h-0.5 bg-indigo-500"></span>
-            Profile &amp; Background
-          </div>
-          <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Obsessed with speed, minimal bloat, and usability.
-          </h2>
-          <p class="text-slate-300 leading-relaxed text-sm sm:text-base">
-            I've spent hundreds of hours experimenting with web primitives, single-file applications, and automated browser enhancements. My workflow leans heavily into writing code that runs instantly without multi-megabyte bundle dependencies.
-          </p>
-          <p class="text-slate-400 leading-relaxed text-sm">
-            Whether developing productivity dashes, DOM automation scripts for routine workflows, or educational doc repositories, my standard is clean separation of concerns, modern CSS layouts, and full offline resilience whenever possible.
-          </p>
-          
-          <!-- Key attributes -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-            <div class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-900/60 border border-white/5">
-              <div class="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-              </div>
-              <div>
-                <h4 class="text-sm font-semibold text-white">Fast & Responsive</h4>
-                <p class="text-xs text-slate-400 mt-0.5">Mobile-first fluid layouts with zero layout shifts.</p>
-              </div>
-            </div>
+        <!-- Live Status Pill -->
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-parchment-card border border-parchment-border shadow-subtle text-xs font-mono text-parchment-body">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span>Open for collaborative builds & open-source tools</span>
+        </div>
 
-            <div class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-900/60 border border-white/5">
-              <div class="p-2 rounded-lg bg-cyan-500/10 text-cyan-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-              </div>
-              <div>
-                <h4 class="text-sm font-semibold text-white">Clean Semantics</h4>
-                <p class="text-xs text-slate-400 mt-0.5">Semantic HTML5, accessible components, and strict linting.</p>
-              </div>
-            </div>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+          <!-- Profile Avatar with dynamic fallback -->
+          <div class="relative shrink-0 group">
+            <img
+              src="https://github.com/meoponly.png"
+              alt="meoponly profile picture"
+              onerror="this.onerror=null; this.src='https://placehold.co/180x180/1A1917/F5F5F0?text=M';"
+              class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border-2 border-parchment-border shadow-elevated bg-parchment-card group-hover:scale-[1.02] smooth-transition"
+            />
+            <span class="absolute -bottom-1 -right-1 bg-parchment-charcoal text-parchment text-[10px] font-mono px-2 py-0.5 rounded-md border border-parchment-border">
+              dev
+            </span>
+          </div>
+
+          <div>
+            <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-parchment-charcoal leading-none">
+              meoponly
+            </h1>
+            <p class="font-serif italic text-xl sm:text-2xl text-parchment-clay mt-1">
+              Builder, student & open-source craftsman
+            </p>
           </div>
         </div>
 
-        <!-- Right card: Quick Info Deck -->
-        <div class="lg:col-span-5">
-          <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
-            <div class="text-xs font-mono text-slate-400 uppercase tracking-widest mb-4">Developer Snapshot</div>
-            
-            <div class="space-y-4 text-sm font-mono">
-              <div class="flex items-center justify-between pb-3 border-b border-white/5">
-                <span class="text-slate-400">Handle</span>
-                <span class="text-indigo-300 font-semibold">@meoponly</span>
-              </div>
-              <div class="flex items-center justify-between pb-3 border-b border-white/5">
-                <span class="text-slate-400">Primary Domain</span>
-                <span class="text-cyan-300 font-semibold">meoponly.is-a.dev</span>
-              </div>
-              <div class="flex items-center justify-between pb-3 border-b border-white/5">
-                <span class="text-slate-400">Deployment</span>
-                <span class="text-slate-200">GitHub Pages (CI/CD)</span>
-              </div>
-              <div class="flex items-center justify-between pb-3 border-b border-white/5">
-                <span class="text-slate-400">Editor</span>
-                <span class="text-slate-200">VS Code + Neovim bindings</span>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-slate-400">Status</span>
-                <span class="text-emerald-400 flex items-center gap-1.5">
-                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                  Ready to deploy
-                </span>
-              </div>
-            </div>
-
-            <!-- Terminal badge mock -->
-            <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-slate-500 font-mono">
-              <span>SHA-256 Verified</span>
-              <span>is-a-dev/register ready</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="stack" class="scroll-mt-28 space-y-8">
-      <div class="text-center max-w-xl mx-auto">
-        <div class="inline-flex items-center gap-2 text-indigo-400 text-xs font-mono font-semibold tracking-wider uppercase mb-2">
-          <span>// Tools &amp; Technologies</span>
-        </div>
-        <h2 class="text-3xl font-extrabold text-white">Core Technology Stack</h2>
-        <p class="text-slate-400 text-sm mt-2">Tools, libraries, and runtime platforms I regularly implement across projects.</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        <!-- Frontend Column -->
-        <div class="glass-card rounded-2xl p-6">
-          <div class="flex items-center gap-3 mb-5">
-            <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold">
-              01
-            </div>
-            <div>
-              <h3 class="text-base font-semibold text-white">Frontend Core</h3>
-              <p class="text-xs text-slate-400 font-mono">User Interface &amp; Styling</p>
-            </div>
-          </div>
-          <div class="flex flex-wrap gap-2 font-mono text-xs">
-            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-200 hover:border-indigo-400 transition">HTML5 & Semantic Web</span>
-            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-200 hover:border-indigo-400 transition">Tailwind CSS v3/v4</span>
-            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-200 hover:border-indigo-400 transition">Modern JavaScript (ES6+)</span>
-            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-200 hover:border-indigo-400 transition">CSS Grid &amp; Flexbox</span>
-            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-200 hover:border-indigo-400 transition">React (SPA Basics)</span>
-          </div>
-        </div>
-
-        <!-- Scripting & Automation Column -->
-        <div class="glass-card rounded-2xl p-6">
-          <div class="flex items-center gap-3 mb-5">
-            <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold">
-              02
-            </div>
-            <div>
-              <h3 class="text-base font-semibold text-white">Scripting &amp; Tools</h3>
-              <p class="text-xs text-slate-400 font-mono">DOM Manipulation &amp; Logic</p>
-            </div>
-          </div>
-          <div class="flex flex-wrap gap-2 font-mono text-xs">
-            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-200 hover:border-cyan-400 transition">Tampermonkey Scripts</span>
-            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-200 hover:border-cyan-400 transition">Chrome Extension APIs</span>
-            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-200 hover:border-cyan-400 transition">DOM MutationObservers</span>
-            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-200 hover:border-cyan-400 transition">Fetch &amp; REST APIs</span>
-            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-200 hover:border-cyan-400 transition">Web Storage (LocalStorage)</span>
-          </div>
-        </div>
-
-        <!-- Workflows & DevOps Column -->
-        <div class="glass-card rounded-2xl p-6">
-          <div class="flex items-center gap-3 mb-5">
-            <div class="w-9 h-9 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 font-bold">
-              03
-            </div>
-            <div>
-              <h3 class="text-base font-semibold text-white">Workflows &amp; Hosting</h3>
-              <p class="text-xs text-slate-400 font-mono">Deployments &amp; VCS</p>
-            </div>
-          </div>
-          <div class="flex flex-wrap gap-2 font-mono text-xs">
-            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-200 hover:border-violet-400 transition">Git Version Control</span>
-            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-200 hover:border-violet-400 transition">GitHub Pages &amp; CNAME</span>
-            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-200 hover:border-violet-400 transition">GitHub Actions (CI/CD)</span>
-            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-200 hover:border-violet-400 transition">Cloudflare DNS</span>
-            <span class="px-3 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-200 hover:border-violet-400 transition">Vercel &amp; Netlify</span>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <section id="projects" class="scroll-mt-28 space-y-8">
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <div>
-          <div class="text-indigo-400 text-xs font-mono font-semibold tracking-wider uppercase mb-1">
-            Featured Works
-          </div>
-          <h2 class="text-3xl font-extrabold text-white">Active Projects &amp; Repositories</h2>
-        </div>
-        <p class="text-xs text-slate-400 font-mono">
-          All projects are open-source & non-commercial
+        <p class="text-base sm:text-lg text-parchment-body max-w-2xl leading-relaxed font-normal">
+          Designing minimalist digital experiences, web tools, and curated educational resources. Focused on lightweight code, distraction-free interfaces, and solving pragmatic problems.
         </p>
+
+        <!-- Social Links & Action Hub -->
+        <div class="flex flex-wrap items-center gap-2.5 pt-2">
+          <!-- GitHub -->
+          <a
+            href="https://github.com/meoponly"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium bg-parchment-card hover:bg-parchment-charcoal hover:text-parchment text-parchment-charcoal border border-parchment-border shadow-subtle hover:shadow-elevated smooth-transition"
+          >
+            <i class="fa-brands fa-github text-sm"></i>
+            <span>@meoponly</span>
+          </a>
+
+          <!-- Telegram -->
+          <a
+            href="https://t.me/meoponly"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium bg-parchment-card hover:bg-[#229ED9] hover:text-white hover:border-[#229ED9] text-parchment-charcoal border border-parchment-border shadow-subtle hover:shadow-elevated smooth-transition"
+          >
+            <i class="fa-brands fa-telegram text-sm"></i>
+            <span>Telegram</span>
+          </a>
+
+          <!-- YouTube -->
+          <a
+            href="https://youtube.com/@meoponly"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium bg-parchment-card hover:bg-[#FF0000] hover:text-white hover:border-[#FF0000] text-parchment-charcoal border border-parchment-border shadow-subtle hover:shadow-elevated smooth-transition"
+          >
+            <i class="fa-brands fa-youtube text-sm"></i>
+            <span>YouTube</span>
+          </a>
+
+          <!-- Quick Copy Handle -->
+          <button
+            onclick="copyToClipboard('meoponly', 'Copied handle @meoponly!')"
+            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-mono text-parchment-muted hover:text-parchment-charcoal bg-parchment-sand border border-parchment-border hover:bg-parchment-deep smooth-transition"
+            title="Click to copy handle"
+          >
+            <i class="fa-regular fa-copy text-xs"></i>
+            <span>Copy handle</span>
+          </button>
+        </div>
+
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Right Column: Interactive "Now" Card & Stats -->
+      <div class="lg:col-span-4 space-y-4">
         
-        <!-- Project 1 -->
-        <article class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
-          <div>
-            <div class="flex items-center justify-between text-xs text-slate-400 font-mono mb-4">
-              <span class="px-2.5 py-1 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Web App</span>
-              <span>Active</span>
-            </div>
-            <h3 class="text-lg font-bold text-white group-hover:text-indigo-300 transition">
-              Velocity Task &amp; Focus Hub
-            </h3>
-            <p class="text-slate-400 text-xs leading-relaxed mt-2.5">
-              A distraction-free productivity cockpit engineered with vanilla JavaScript. Features Pomodoro sequencing, keyboard shortcuts, sound frequency generation, and persistent offline JSON backup.
-            </p>
-            <div class="flex flex-wrap gap-1.5 mt-4">
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-white/5 text-slate-300">Vanilla JS</span>
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-white/5 text-slate-300">Tailwind</span>
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-white/5 text-slate-300">Web Audio API</span>
-            </div>
-          </div>
-
-          <div class="pt-6 mt-6 border-t border-white/5 flex items-center justify-between text-xs font-mono">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white flex items-center gap-1.5 transition">
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-              Source
-            </a>
-            <span class="text-indigo-400 hover:text-indigo-300 flex items-center gap-1 cursor-pointer" onclick="showToast('Loading live demo simulation...')">
-              Launch Demo ↗
+        <!-- Live Micro-Feed ("Now" Card) -->
+        <div class="p-5 rounded-2xl bg-parchment-card border border-parchment-border shadow-subtle relative overflow-hidden">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-mono uppercase tracking-wider text-parchment-muted flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              Current Status / Now
             </span>
+            <span class="text-[11px] font-mono text-parchment-muted">v2.4</span>
           </div>
-        </article>
+          <p class="text-sm text-parchment-charcoal leading-relaxed font-medium">
+            Polishing <strong class="text-parchment-clay font-semibold">ewtube</strong> for distraction-free video playback & compiling high-yield problem sets on <strong class="text-parchment-charcoal font-semibold">IOQM Pro</strong>.
+          </p>
+          <div class="mt-3 pt-3 border-t border-parchment-border/70 flex items-center justify-between text-xs text-parchment-muted font-mono">
+            <span>Location: India</span>
+            <span>Focus: Web Performance</span>
+          </div>
+        </div>
 
-        <!-- Project 2 -->
-        <article class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
-          <div>
-            <div class="flex items-center justify-between text-xs text-slate-400 font-mono mb-4">
-              <span class="px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Userscript Suite</span>
-              <span>v1.4.0</span>
-            </div>
-            <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition">
-              Web Enhancer &amp; Controller
-            </h3>
-            <p class="text-slate-400 text-xs leading-relaxed mt-2.5">
-              Collection of client-side browser enhancements written for Tampermonkey and Violentmonkey. Provides granular HTML5 video playback speed up to 16x, auto-ad skipper hooks, and anti-tracker cleansers.
-            </p>
-            <div class="flex flex-wrap gap-1.5 mt-4">
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-white/5 text-slate-300">JavaScript</span>
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-white/5 text-slate-300">DOM Hooks</span>
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-white/5 text-slate-300">Userscript</span>
-            </div>
+        <!-- Metrics Grid -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="p-4 rounded-xl bg-parchment-card border border-parchment-border text-center shadow-subtle">
+            <span class="block font-serif text-2xl font-normal text-parchment-charcoal">06+</span>
+            <span class="text-[11px] font-mono text-parchment-muted uppercase tracking-wider">Projects</span>
           </div>
-
-          <div class="pt-6 mt-6 border-t border-white/5 flex items-center justify-between text-xs font-mono">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white flex items-center gap-1.5 transition">
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-              Source
-            </a>
-            <span class="text-cyan-400 hover:text-cyan-300 flex items-center gap-1 cursor-pointer" onclick="showToast('Install script dialog triggered')">
-              Install Script ↗
-            </span>
+          <div class="p-4 rounded-xl bg-parchment-card border border-parchment-border text-center shadow-subtle">
+            <span class="block font-serif text-2xl font-normal text-parchment-clay">100%</span>
+            <span class="text-[11px] font-mono text-parchment-muted uppercase tracking-wider">Free / Open</span>
           </div>
-        </article>
-
-        <!-- Project 3 -->
-        <article class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
-          <div>
-            <div class="flex items-center justify-between text-xs text-slate-400 font-mono mb-4">
-              <span class="px-2.5 py-1 rounded bg-violet-500/10 text-violet-400 border border-violet-500/20">Docs Engine</span>
-              <span>Markdown</span>
-            </div>
-            <h3 class="text-lg font-bold text-white group-hover:text-violet-300 transition">
-              Developer Resource Vault
-            </h3>
-            <p class="text-slate-400 text-xs leading-relaxed mt-2.5">
-              Static indexing site categorizing essential developer cheat-sheets, regex templates, and design system tokens. Built for instant fuzzy search across 100+ programming topics with zero backend.
-            </p>
-            <div class="flex flex-wrap gap-1.5 mt-4">
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-white/5 text-slate-300">HTML / CSS</span>
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-white/5 text-slate-300">Fuzzy Search</span>
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-white/5 text-slate-300">Static Docs</span>
-            </div>
+          <div class="p-4 rounded-xl bg-parchment-card border border-parchment-border text-center shadow-subtle">
+            <span class="block font-serif text-2xl font-normal text-emerald-700">24/7</span>
+            <span class="text-[11px] font-mono text-parchment-muted uppercase tracking-wider">Hosted</span>
           </div>
-
-          <div class="pt-6 mt-6 border-t border-white/5 flex items-center justify-between text-xs font-mono">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white flex items-center gap-1.5 transition">
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-              Source
-            </a>
-            <span class="text-violet-400 hover:text-violet-300 flex items-center gap-1 cursor-pointer" onclick="showToast('Opening Docs Directory...')">
-              View Portal ↗
-            </span>
-          </div>
-        </article>
+        </div>
 
       </div>
     </section>
 
-    <section id="terminal" class="scroll-mt-28 space-y-4">
-      <div class="flex items-center justify-between">
+    <!-- TECH STACK SHELF -->
+    <section id="stack" class="pt-4 border-t border-parchment-border">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
         <div>
-          <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-            <span class="text-indigo-400 font-mono text-xl">&gt;</span> Interactive Developer Shell
+          <h2 class="font-serif text-2xl font-normal text-parchment-charcoal">
+            Selected Tech Shelf
           </h2>
-          <p class="text-xs text-slate-400 font-mono mt-1">Explore my environment directly from your browser.</p>
-        </div>
-        <div class="hidden sm:flex gap-1.5 text-xs font-mono">
-          <button onclick="runCommand('help')" class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10">help</button>
-          <button onclick="runCommand('whoami')" class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10">whoami</button>
-          <button onclick="runCommand('stack')" class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10">stack</button>
-          <button onclick="runCommand('domain')" class="px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10">domain</button>
+          <p class="text-xs text-parchment-muted font-mono mt-0.5">
+            Tools, languages, and platforms utilized across active repositories
+          </p>
         </div>
       </div>
 
-      <!-- Terminal Window Box -->
-      <div class="rounded-2xl border border-white/10 bg-[#070b16] shadow-2xl overflow-hidden font-mono text-xs sm:text-sm">
-        <!-- Terminal Header Bar -->
-        <div class="bg-slate-900/90 px-4 py-2.5 border-b border-white/10 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
-            <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
-            <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
-          </div>
-          <span class="text-slate-400 text-xs">meoponly@portfolio:~ (bash)</span>
-          <span class="text-[10px] text-slate-500">UTF-8</span>
-        </div>
-
-        <!-- Terminal Output Area -->
-        <div id="terminal-output" class="p-4 sm:p-6 space-y-3 h-72 overflow-y-auto leading-relaxed text-slate-300">
-          <div class="text-slate-500">Welcome to meoponly dev-shell v1.0.3</div>
-          <div class="text-slate-500">Type <span class="text-indigo-400">'help'</span> to see available commands or click the chips above.</div>
-        </div>
-
-        <!-- Terminal Input Prompt -->
-        <div class="px-4 py-3 bg-black/40 border-t border-white/5 flex items-center gap-2">
-          <span class="text-emerald-400 font-bold">meoponly@dev:~$</span>
-          <input 
-            type="text" 
-            id="terminal-input" 
-            class="flex-1 bg-transparent text-white focus:outline-none placeholder-slate-600 font-mono text-xs sm:text-sm"
-            placeholder="Type a command (try 'whoami', 'stack', 'contact')..."
-            autocomplete="off"
-            spellcheck="false"
-          />
-        </div>
+      <!-- Skills Pill Cloud with interactive hover tooltips -->
+      <div class="flex flex-wrap gap-2.5">
+        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-parchment-card border border-parchment-border text-xs font-mono text-parchment-charcoal shadow-subtle hover:border-parchment-charcoal smooth-transition">
+          <i class="fa-brands fa-html5 text-[#E34F26]"></i> HTML5 & Semantic UI
+        </span>
+        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-parchment-card border border-parchment-border text-xs font-mono text-parchment-charcoal shadow-subtle hover:border-parchment-charcoal smooth-transition">
+          <i class="fa-brands fa-css3-alt text-[#1572B6]"></i> Tailwind CSS
+        </span>
+        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-parchment-card border border-parchment-border text-xs font-mono text-parchment-charcoal shadow-subtle hover:border-parchment-charcoal smooth-transition">
+          <i class="fa-brands fa-js text-[#F7DF1E]"></i> Modern JavaScript
+        </span>
+        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-parchment-card border border-parchment-border text-xs font-mono text-parchment-charcoal shadow-subtle hover:border-parchment-charcoal smooth-transition">
+          <i class="fa-brands fa-git-alt text-[#F05032]"></i> Git & GitHub Pages
+        </span>
+        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-parchment-card border border-parchment-border text-xs font-mono text-parchment-charcoal shadow-subtle hover:border-parchment-charcoal smooth-transition">
+          <i class="fa-solid fa-cloud-arrow-up text-[#00C7B7]"></i> Netlify & Vercel
+        </span>
+        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-parchment-card border border-parchment-border text-xs font-mono text-parchment-charcoal shadow-subtle hover:border-parchment-charcoal smooth-transition">
+          <i class="fa-solid fa-terminal text-parchment-clay"></i> Bash & CLI Scripting
+        </span>
+        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-parchment-card border border-parchment-border text-xs font-mono text-parchment-charcoal shadow-subtle hover:border-parchment-charcoal smooth-transition">
+          <i class="fa-solid fa-network-wired text-parchment-charcoal"></i> REST APIs & Parsing
+        </span>
       </div>
     </section>
 
-    <section id="contact" class="scroll-mt-28">
-      <div class="glass-card rounded-3xl p-8 sm:p-12 border border-white/10 relative overflow-hidden">
-        
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          
-          <div class="lg:col-span-7 space-y-4">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-mono">
-              Get in touch
+    <!-- PROJECTS SECTION: 3-COLUMNS WITH LIVE FILTERING & SEARCH -->
+    <section id="projects" class="space-y-6 pt-6 border-t border-parchment-border">
+      
+      <!-- Section Header & Filter Toolbar -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-5">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-widest text-parchment-clay block mb-1">
+            Index of Works
+          </span>
+          <h2 class="font-serif text-3xl sm:text-4xl font-normal text-parchment-charcoal">
+            Featured Deployments
+          </h2>
+        </div>
+
+        <!-- Filter Controls + Search -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <!-- Search Input -->
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-parchment-muted text-xs"></i>
+            <input
+              type="text"
+              id="project-search"
+              oninput="filterProjects()"
+              placeholder="Search builds..."
+              class="pl-8 pr-3 py-1.5 text-xs font-mono rounded-lg bg-parchment-card border border-parchment-border focus:outline-none focus:border-parchment-charcoal text-parchment-charcoal placeholder-parchment-muted w-36 sm:w-44 shadow-subtle smooth-transition"
+            />
+          </div>
+
+          <!-- Category Buttons -->
+          <div class="inline-flex p-1 bg-parchment-deep rounded-xl border border-parchment-border text-xs font-mono">
+            <button
+              class="filter-btn active px-3 py-1 rounded-lg bg-parchment-charcoal text-parchment smooth-transition"
+              onclick="setCategory('all', this)"
+            >
+              All (<span id="count-all">6</span>)
+            </button>
+            <button
+              class="filter-btn px-3 py-1 rounded-lg text-parchment-body hover:text-parchment-charcoal smooth-transition"
+              onclick="setCategory('web', this)"
+            >
+              Web Apps
+            </button>
+            <button
+              class="filter-btn px-3 py-1 rounded-lg text-parchment-body hover:text-parchment-charcoal smooth-transition"
+              onclick="setCategory('tools', this)"
+            >
+              Tools
+            </button>
+            <button
+              class="filter-btn px-3 py-1 rounded-lg text-parchment-body hover:text-parchment-charcoal smooth-transition"
+              onclick="setCategory('learning', this)"
+            >
+              Learning
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3-COLUMNS RESPONSIVE PROJECT GRID -->
+      <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- PROJECT 1: IOQM Pro -->
+        <article
+          data-category="learning"
+          data-keywords="ioqm pro math lecture notes chapters olympiad education preparation study"
+          class="project-card flex flex-col justify-between p-6 rounded-2xl bg-parchment-card border border-parchment-border hover:border-parchment-charcoal/40 shadow-subtle hover:shadow-lift smooth-transition relative group"
+        >
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <span class="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Featured
+              </span>
+              <span class="text-xs font-mono text-parchment-muted">01 / 06</span>
             </div>
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Let's collaborate on your next idea.
-            </h2>
-            <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
-              Have an open-source project, a frontend idea, or want to discuss modern web tools? Send me a message or copy my direct handle below.
+
+            <h3 class="font-serif text-2xl font-medium text-parchment-charcoal group-hover:text-parchment-clay smooth-transition">
+              IOQM Pro
+            </h3>
+
+            <p class="text-sm text-parchment-body mt-2.5 leading-relaxed font-light">
+              A comprehensive, minimalist collection of chapters & lectures organized systematically for competitive IOQM mathematics preparation.
             </p>
+          </div>
 
-            <div class="pt-4 flex flex-wrap items-center gap-3 font-mono text-xs">
-              <!-- Quick email copy button -->
-              <button 
-                id="copy-email-btn"
-                class="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 flex items-center gap-2 transition"
-                title="Copy email to clipboard"
-              >
-                <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                <span id="email-text">meoponly@gmail.com</span>
-                <span class="text-slate-500">📋</span>
-              </button>
+          <div class="mt-6 pt-4 border-t border-parchment-border/80">
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Education</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Olympiad Math</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Curated</span>
+            </div>
 
-              <a 
-                href="https://github.com" 
-                target="_blank" 
+            <div class="flex items-center justify-between gap-2">
+              <a
+                href="https://github.com/meoponly/ioqm_pro"
+                target="_blank"
                 rel="noopener noreferrer"
-                class="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 flex items-center gap-2 transition"
+                class="inline-flex items-center gap-1.5 text-xs font-mono text-parchment-muted hover:text-parchment-charcoal smooth-transition"
+                title="View GitHub Repository"
               >
-                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                GitHub Profile ↗
+                <i class="fa-brands fa-github text-sm"></i>
+                <span>Repository</span>
+              </a>
+
+              <a
+                href="https://meoponly.github.io/ioqm_pro/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-parchment-sand hover:bg-parchment-charcoal text-parchment-charcoal hover:text-parchment border border-parchment-border smooth-transition"
+              >
+                <span>Live Site</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
               </a>
             </div>
           </div>
+        </article>
 
-          <!-- Quick Interactive Message Box -->
-          <div class="lg:col-span-5 bg-slate-900/80 p-6 rounded-2xl border border-white/5 space-y-4">
-            <h3 class="text-sm font-semibold text-white">Send a quick note</h3>
-            <form id="contact-form" class="space-y-3" onsubmit="event.preventDefault(); handleFormSubmit();">
-              <div>
-                <label class="block text-[11px] font-mono text-slate-400 mb-1">Your Name</label>
-                <input required type="text" id="sender-name" class="w-full px-3 py-2 bg-slate-950 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500" placeholder="e.g. Alex" />
-              </div>
-              <div>
-                <label class="block text-[11px] font-mono text-slate-400 mb-1">Your Email</label>
-                <input required type="email" id="sender-email" class="w-full px-3 py-2 bg-slate-950 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500" placeholder="alex@example.com" />
-              </div>
-              <div>
-                <label class="block text-[11px] font-mono text-slate-400 mb-1">Message</label>
-                <textarea required id="sender-msg" rows="3" class="w-full px-3 py-2 bg-slate-950 border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500 resize-none" placeholder="Let's build something..."></textarea>
-              </div>
-              <button type="submit" class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 font-semibold text-xs rounded-lg text-white transition shadow-lg shadow-indigo-600/30">
-                Send Note
-              </button>
-            </form>
+        <!-- PROJECT 2: pwmate -->
+        <article
+          data-category="tools"
+          data-keywords="pwmate coupon discounts promo pw savings tool vouchers batches discount"
+          class="project-card flex flex-col justify-between p-6 rounded-2xl bg-parchment-card border border-parchment-border hover:border-parchment-charcoal/40 shadow-subtle hover:shadow-lift smooth-transition relative group"
+        >
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <span class="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                <i class="fa-solid fa-bolt text-[10px]"></i>
+                Savings Tool
+              </span>
+              <span class="text-xs font-mono text-parchment-muted">02 / 06</span>
+            </div>
+
+            <h3 class="font-serif text-2xl font-medium text-parchment-charcoal group-hover:text-parchment-clay smooth-transition">
+              pwmate
+            </h3>
+
+            <p class="text-sm text-parchment-body mt-2.5 leading-relaxed font-light">
+              Free PW discount coupon engine that automatically collects and surfaces active promo codes for maximum course discounts.
+            </p>
           </div>
 
+          <div class="mt-6 pt-4 border-t border-parchment-border/80">
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Web Tool</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Coupons</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Discounts</span>
+            </div>
+
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs font-mono text-parchment-muted flex items-center gap-1">
+                <i class="fa-solid fa-server text-[10px]"></i> Netlify App
+              </span>
+
+              <a
+                href="https://pw-mate.netlify.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-parchment-sand hover:bg-parchment-charcoal text-parchment-charcoal hover:text-parchment border border-parchment-border smooth-transition"
+              >
+                <span>Launch Tool</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- PROJECT 3: pw pirates -->
+        <article
+          data-category="web"
+          data-keywords="pw pirates deadpool movies streaming cinema films player media entertainment"
+          class="project-card flex flex-col justify-between p-6 rounded-2xl bg-parchment-card border border-parchment-border hover:border-parchment-charcoal/40 shadow-subtle hover:shadow-lift smooth-transition relative group"
+        >
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <span class="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200">
+                <i class="fa-solid fa-film text-[10px]"></i>
+                Streaming Hub
+              </span>
+              <span class="text-xs font-mono text-parchment-muted">03 / 06</span>
+            </div>
+
+            <h3 class="font-serif text-2xl font-medium text-parchment-charcoal group-hover:text-parchment-clay smooth-transition">
+              pw pirates
+            </h3>
+
+            <p class="text-sm text-parchment-body mt-2.5 leading-relaxed font-light">
+              Ad-free streaming cinema index and film player with organized titles, quick playback sources, and clean viewing navigation.
+            </p>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-parchment-border/80">
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Movies</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Streaming</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Vercel</span>
+            </div>
+
+            <div class="flex items-center justify-between gap-2">
+              <a
+                href="https://github.com/meoponly/deadpool-movies"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 text-xs font-mono text-parchment-muted hover:text-parchment-charcoal smooth-transition"
+                title="View GitHub Repository"
+              >
+                <i class="fa-brands fa-github text-sm"></i>
+                <span>Repository</span>
+              </a>
+
+              <a
+                href="https://deadpool-pirates.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-parchment-sand hover:bg-parchment-charcoal text-parchment-charcoal hover:text-parchment border border-parchment-border smooth-transition"
+              >
+                <span>Live Site</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- PROJECT 4: ewtube -->
+        <article
+          data-category="web"
+          data-keywords="ewtube youtube video minimalist distraction free player clean client adfree"
+          class="project-card flex flex-col justify-between p-6 rounded-2xl bg-parchment-card border border-parchment-border hover:border-parchment-charcoal/40 shadow-subtle hover:shadow-lift smooth-transition relative group"
+        >
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <span class="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-800 border border-purple-200">
+                <i class="fa-solid fa-circle-play text-[10px]"></i>
+                Video Player
+              </span>
+              <span class="text-xs font-mono text-parchment-muted">04 / 06</span>
+            </div>
+
+            <h3 class="font-serif text-2xl font-medium text-parchment-charcoal group-hover:text-parchment-clay smooth-transition">
+              ewtube
+            </h3>
+
+            <p class="text-sm text-parchment-body mt-2.5 leading-relaxed font-light">
+              Minimalist, distraction-free YouTube alternative web interface stripping away algorithmic feeds, comments, and shorts for pure focus.
+            </p>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-parchment-border/80">
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">YouTube</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Focus</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Web App</span>
+            </div>
+
+            <div class="flex items-center justify-between gap-2">
+              <a
+                href="https://github.com/meoponly/ewtube.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 text-xs font-mono text-parchment-muted hover:text-parchment-charcoal smooth-transition"
+                title="View GitHub Repository"
+              >
+                <i class="fa-brands fa-github text-sm"></i>
+                <span>Repository</span>
+              </a>
+
+              <a
+                href="https://meoponly.github.io/ewtube.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-parchment-sand hover:bg-parchment-charcoal text-parchment-charcoal hover:text-parchment border border-parchment-border smooth-transition"
+              >
+                <span>Live Site</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- PROJECT 5: yt4free -->
+        <article
+          data-category="web"
+          data-keywords="yt4free youtube premium cookie free tracker free player stream videos privacy"
+          class="project-card flex flex-col justify-between p-6 rounded-2xl bg-parchment-card border border-parchment-border hover:border-parchment-charcoal/40 shadow-subtle hover:shadow-lift smooth-transition relative group"
+        >
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <span class="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200">
+                <i class="fa-solid fa-shield-halved text-[10px]"></i>
+                Privacy Watcher
+              </span>
+              <span class="text-xs font-mono text-parchment-muted">05 / 06</span>
+            </div>
+
+            <h3 class="font-serif text-2xl font-medium text-parchment-charcoal group-hover:text-parchment-clay smooth-transition">
+              yt4free
+            </h3>
+
+            <p class="text-sm text-parchment-body mt-2.5 leading-relaxed font-light">
+              Cookie-free, tracking-free YouTube watcher allowing fast, frictionless video playback without privacy intrusive trackers.
+            </p>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-parchment-border/80">
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Privacy</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">No Cookies</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Streaming</span>
+            </div>
+
+            <div class="flex items-center justify-between gap-2">
+              <a
+                href="https://github.com/meoponly/yt-premium-4free"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 text-xs font-mono text-parchment-muted hover:text-parchment-charcoal smooth-transition"
+                title="View GitHub Repository"
+              >
+                <i class="fa-brands fa-github text-sm"></i>
+                <span>Repository</span>
+              </a>
+
+              <a
+                href="https://yt4free.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-parchment-sand hover:bg-parchment-charcoal text-parchment-charcoal hover:text-parchment border border-parchment-border smooth-transition"
+              >
+                <span>Live Site</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- PROJECT 6: pseudomation -->
+        <article
+          data-category="tools"
+          data-keywords="pseudomation study tracker pomodoro timer session productivity minimalist student"
+          class="project-card flex flex-col justify-between p-6 rounded-2xl bg-parchment-card border border-parchment-border hover:border-parchment-charcoal/40 shadow-subtle hover:shadow-lift smooth-transition relative group"
+        >
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <span class="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-800 border border-stone-300">
+                <i class="fa-regular fa-clock text-[10px]"></i>
+                Productivity
+              </span>
+              <span class="text-xs font-mono text-parchment-muted">06 / 06</span>
+            </div>
+
+            <h3 class="font-serif text-2xl font-medium text-parchment-charcoal group-hover:text-parchment-clay smooth-transition">
+              pseudomation
+            </h3>
+
+            <p class="text-sm text-parchment-body mt-2.5 leading-relaxed font-light">
+              Minimalist, aesthetic study session tracker built to log deep work hours, maintain focus routines, and quantify daily learning momentum.
+            </p>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-parchment-border/80">
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Study Tracker</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Minimalist</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-parchment-sand text-parchment-muted border border-parchment-border">Productivity</span>
+            </div>
+
+            <div class="flex items-center justify-between gap-2">
+              <a
+                href="https://github.com/meoponly/nothing"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 text-xs font-mono text-parchment-muted hover:text-parchment-charcoal smooth-transition"
+                title="View GitHub Repository"
+              >
+                <i class="fa-brands fa-github text-sm"></i>
+                <span>Repository</span>
+              </a>
+
+              <a
+                href="https://pseudomation.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-parchment-sand hover:bg-parchment-charcoal text-parchment-charcoal hover:text-parchment border border-parchment-border smooth-transition"
+              >
+                <span>Live Site</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+              </a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- No Results Feedback Message -->
+      <div id="no-results" class="hidden p-10 rounded-2xl bg-parchment-card border border-dashed border-parchment-border text-center">
+        <i class="fa-regular fa-folder-open text-2xl text-parchment-muted mb-2"></i>
+        <p class="text-sm font-medium text-parchment-charcoal">No projects matched your criteria.</p>
+        <p class="text-xs text-parchment-muted mt-1">Try clearing your search term or selecting "All".</p>
+      </div>
+
+    </section>
+
+    <!-- DEVELOPER CLI / QUICK INSPECT DRAWER -->
+    <section id="terminal" class="pt-6 border-t border-parchment-border">
+      <div class="p-6 sm:p-8 rounded-2xl bg-[#1C1B18] text-[#E5E4DF] shadow-elevated border border-[#33322D]">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-[#2C2B26]">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-[#FF5F56]"></span>
+            <span class="w-3 h-3 rounded-full bg-[#FFBD2E]"></span>
+            <span class="w-3 h-3 rounded-full bg-[#27C93F]"></span>
+            <span class="ml-2 font-mono text-xs text-[#8C8A82]">meoponly@is-a-dev ~ quick-inspect</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button
+              onclick="copyToClipboard('curl -s https://meoponly.is-a.dev/status', 'CLI command copied!')"
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#2B2A25] hover:bg-[#3B3A33] text-xs font-mono text-[#D4D2CA] smooth-transition"
+            >
+              <i class="fa-regular fa-copy text-[11px]"></i>
+              <span>Copy curl</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-2 font-mono text-xs sm:text-sm">
+          <div class="text-[#8C8A82]"># Inspect live developer metadata via your terminal:</div>
+          <div class="flex items-center gap-2 text-parchment-sand">
+            <span class="text-parchment-clay font-bold">$</span>
+            <span class="text-[#E5E4DF]">curl -s https://meoponly.is-a.dev/status</span>
+          </div>
+          <div class="pt-2 text-[#9A988E] text-[11px] sm:text-xs leading-relaxed">
+            {<br/>
+            &nbsp;&nbsp;<span class="text-[#E2B77B]">"handle"</span>: <span class="text-[#A5C261]">"meoponly"</span>,<br/>
+            &nbsp;&nbsp;<span class="text-[#E2B77B]">"role"</span>: <span class="text-[#A5C261]">"Full-stack Web Developer & Math Student"</span>,<br/>
+            &nbsp;&nbsp;<span class="text-[#E2B77B]">"featured"</span>: [<span class="text-[#A5C261]">"IOQM Pro"</span>, <span class="text-[#A5C261]">"pwmate"</span>, <span class="text-[#A5C261]">"pw pirates"</span>, <span class="text-[#A5C261]">"ewtube"</span>],<br/>
+            &nbsp;&nbsp;<span class="text-[#E2B77B]">"subdomain"</span>: <span class="text-[#A5C261]">"meoponly.is-a.dev"</span>,<br/>
+            &nbsp;&nbsp;<span class="text-[#E2B77B]">"status"</span>: <span class="text-[#A5C261]">"available_for_collaborations"</span><br/>
+            }
+          </div>
         </div>
       </div>
     </section>
 
   </main>
 
-  <footer class="border-t border-white/5 bg-[#03060e] text-slate-500 py-12 relative z-10 font-mono text-xs">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-        <span class="text-slate-300 font-bold">meoponly.is-a.dev</span>
-        <span>&mdash; Powered by GitHub Pages</span>
+  <!-- ELEVATED FOOTER -->
+  <footer class="mt-20 border-t border-parchment-border bg-parchment-sand">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-parchment-muted font-mono">
+      <div class="flex items-center gap-3">
+        <span class="font-serif text-base text-parchment-charcoal font-medium">meoponly</span>
+        <span>—</span>
+        <span>Hosted via GitHub Pages & is-a.dev DNS</span>
       </div>
-      <div class="text-slate-500 text-center sm:text-right">
-        Designed for open-source development &bull; &copy; 2026 meoponly
+
+      <div class="flex items-center gap-5">
+        <a href="https://github.com/meoponly" target="_blank" rel="noopener noreferrer" class="hover:text-parchment-charcoal smooth-transition">GitHub</a>
+        <a href="https://t.me/meoponly" target="_blank" rel="noopener noreferrer" class="hover:text-parchment-charcoal smooth-transition">Telegram</a>
+        <a href="https://youtube.com/@meoponly" target="_blank" rel="noopener noreferrer" class="hover:text-parchment-charcoal smooth-transition">YouTube</a>
+        <button
+          onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+          class="inline-flex items-center gap-1 hover:text-parchment-charcoal smooth-transition ml-2"
+        >
+          <span>Top</span>
+          <i class="fa-solid fa-arrow-up text-[10px]"></i>
+        </button>
       </div>
     </div>
   </footer>
 
-  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-    <div class="glass-card bg-slate-900 border border-indigo-500/40 rounded-xl px-4 py-3 shadow-2xl flex items-center gap-3 text-xs font-mono text-slate-200">
-      <span class="text-indigo-400 text-base">ℹ️</span>
-      <span id="toast-message">Notification message</span>
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div
+    id="toast"
+    class="fixed bottom-6 right-6 z-50 transform translate-y-16 opacity-0 transition-all duration-300 pointer-events-none"
+  >
+    <div class="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-parchment-charcoal text-parchment shadow-elevated border border-parchment-border/40 text-xs font-mono">
+      <i class="fa-solid fa-circle-check text-emerald-400"></i>
+      <span id="toast-message">Copied to clipboard</span>
     </div>
   </div>
 
+  <!-- JAVASCRIPT: FILTERING, SEARCH, CLIPBOARD -->
   <script>
-    // Toast Notification helper
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      const text = document.getElementById('toast-message');
-      text.textContent = message;
-      toast.classList.remove('translate-y-20', 'opacity-0');
-      toast.classList.add('translate-y-0', 'opacity-100');
-      
-      setTimeout(() => {
-        toast.classList.add('translate-y-20', 'opacity-0');
-        toast.classList.remove('translate-y-0', 'opacity-100');
-      }, 3200);
-    }
+    let activeCategory = 'all';
 
-    // Copy Email to clipboard using execCommand fallback
-    document.getElementById('copy-email-btn').addEventListener('click', function() {
-      const email = 'meoponly@gmail.com';
-      const tempInput = document.createElement('input');
-      tempInput.value = email;
-      document.body.appendChild(tempInput);
-      tempInput.select();
+    // Clipboard copy with visual toast feedback
+    function copyToClipboard(text, message = 'Copied to clipboard!') {
       try {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'absolute';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
         document.execCommand('copy');
-        showToast('Copied meoponly@gmail.com to clipboard!');
+        document.body.removeChild(textarea);
+
+        showToast(message);
       } catch (err) {
-        showToast('Unable to copy automatically.');
+        showToast('Selection copied');
       }
-      document.body.removeChild(tempInput);
-    });
-
-    // Handle Contact Form Submission
-    function handleFormSubmit() {
-      const name = document.getElementById('sender-name').value;
-      showToast(`Thank you, ${name}! Your note has been cached locally.`);
-      document.getElementById('contact-form').reset();
     }
 
-    // Terminal Commands dictionary
-    const commands = {
-      help: () => `Available commands:
-  • <span class="text-indigo-300">whoami</span>   : View biography and focus
-  • <span class="text-indigo-300">stack</span>    : List core technologies
-  • <span class="text-indigo-300">projects</span> : Show active projects
-  • <span class="text-indigo-300">domain</span>   : Verification details for is-a.dev
-  • <span class="text-indigo-300">contact</span>  : Display email & socials
-  • <span class="text-indigo-300">clear</span>    : Reset the console output`,
-      
-      whoami: () => `<span class="text-slate-200 font-semibold">meoponly</span>
-Developer enthusiastic about clean web interfaces, browser scripting, and responsive layouts.
-Status: Active, building single-page utilities and developer tools.`,
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      toastMsg.textContent = msg;
 
-      stack: () => `Core Development Stack:
-  • Languages: HTML5, CSS3, JavaScript (ES6+), Markdown
-  • Frameworks & UI: Tailwind CSS, React
-  • Scripting: Tampermonkey, Chrome Extensions, DOM APIs
-  • Infrastructure: Git, GitHub Pages, Cloudflare DNS`,
+      toast.classList.remove('translate-y-16', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
 
-      projects: () => `1. <span class="text-indigo-400 font-bold">Velocity Hub</span> - Minimalist task & focus timer
-2. <span class="text-cyan-400 font-bold">Userscript Suite</span> - High-efficiency browser automation scripts
-3. <span class="text-violet-400 font-bold">Resource Vault</span> - Instant fuzzy-search technical documentation`,
-
-      domain: () => `Subdomain: <span class="text-emerald-400">meoponly.is-a.dev</span>
-Target: &lt;username&gt;.github.io
-Record Type: CNAME
-Status: Ready for is-a-dev/register Pull Request review.`,
-
-      contact: () => `Email : <span class="text-indigo-400">meoponly@gmail.com</span>
-GitHub: <span class="text-indigo-400">https://github.com</span>`,
-
-      clear: () => null
-    };
-
-    const terminalInput = document.getElementById('terminal-input');
-    const terminalOutput = document.getElementById('terminal-output');
-
-    function runCommand(cmdText) {
-      const query = cmdText.trim().toLowerCase();
-      
-      // Print input line
-      const inputLine = document.createElement('div');
-      inputLine.className = 'text-slate-400 font-mono';
-      inputLine.innerHTML = `<span class="text-emerald-400 font-bold">meoponly@dev:~$</span> ${cmdText}`;
-      terminalOutput.appendChild(inputLine);
-
-      if (query === 'clear') {
-        terminalOutput.innerHTML = '';
-      } else if (commands[query]) {
-        const responseLine = document.createElement('div');
-        responseLine.className = 'text-slate-300 font-mono whitespace-pre-line';
-        responseLine.innerHTML = commands[query]();
-        terminalOutput.appendChild(responseLine);
-      } else if (query !== '') {
-        const errLine = document.createElement('div');
-        errLine.className = 'text-rose-400 font-mono';
-        errLine.innerHTML = `command not found: "${cmdText}". Type <span class="text-indigo-300 underline cursor-pointer" onclick="runCommand('help')">'help'</span> for a list of commands.`;
-        terminalOutput.appendChild(errLine);
-      }
-
-      // Scroll to bottom
-      terminalOutput.scrollTop = terminalOutput.scrollHeight;
+      setTimeout(() => {
+        toast.classList.add('translate-y-16', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 2600);
     }
 
-    terminalInput.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        const value = this.value;
-        if (value.trim() !== '') {
-          runCommand(value);
-          this.value = '';
+    // Category Selector
+    function setCategory(category, buttonElement) {
+      activeCategory = category;
+
+      // Update button styling
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('bg-parchment-charcoal', 'text-parchment');
+        btn.classList.add('text-parchment-body');
+      });
+
+      buttonElement.classList.add('bg-parchment-charcoal', 'text-parchment');
+      buttonElement.classList.remove('text-parchment-body');
+
+      filterProjects();
+    }
+
+    // Combined search and category filtering
+    function filterProjects() {
+      const searchInput = document.getElementById('project-search');
+      const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
+      const cards = document.querySelectorAll('.project-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category');
+        const keywords = card.getAttribute('data-keywords') || '';
+        const title = card.querySelector('h3') ? card.querySelector('h3').textContent.toLowerCase() : '';
+        const desc = card.querySelector('p') ? card.querySelector('p').textContent.toLowerCase() : '';
+
+        const matchesCategory = activeCategory === 'all' || cardCategory === activeCategory;
+        const matchesQuery = query === '' || 
+                             keywords.includes(query) || 
+                             title.includes(query) || 
+                             desc.includes(query);
+
+        if (matchesCategory && matchesQuery) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
         }
+      });
+
+      const noResults = document.getElementById('no-results');
+      if (visibleCount === 0) {
+        noResults.classList.remove('hidden');
+      } else {
+        noResults.classList.add('hidden');
       }
+    }
+
+    // Initialize counts on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      const totalProjects = document.querySelectorAll('.project-card').length;
+      const countEl = document.getElementById('count-all');
+      if (countEl) countEl.textContent = totalProjects;
     });
   </script>
 </body>
