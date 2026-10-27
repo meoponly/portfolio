@@ -4,106 +4,149 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard — meoponly</title>
+  <link rel="icon" type="image/png" href="https://github.com/meoponly.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F5F5F0; color: #1E1E1E; }
     .font-serif-claude { font-family: 'Newsreader', Georgia, serif; }
+    .font-mono-code { font-family: 'JetBrains Mono', monospace; }
   </style>
 </head>
-<body class="p-6 md:p-12 max-w-4xl mx-auto">
+<body class="p-6 md:p-12 max-w-4xl mx-auto selection:bg-[#C15F3D] selection:text-white">
 
-  <div class="flex items-center justify-between border-b border-[#E2DFD8] pb-6 mb-8">
-    <div>
-      <h1 class="text-3xl font-serif-claude font-normal">Project Manager</h1>
-      <p class="text-sm text-[#7D786F]">Add, edit, reorder or remove portfolio projects live.</p>
+  <!-- AUTH LOADING STATE -->
+  <div id="auth-loading" class="text-center py-24">
+    <i class="fa-solid fa-circle-notch fa-spin text-2xl text-[#C15F3D]"></i>
+    <p class="text-xs text-[#7D786F] mt-3 font-mono-code">Verifying session...</p>
+  </div>
+
+  <!-- LOGIN SCREEN (Shown if not logged in or unauthorized) -->
+  <div id="login-section" class="hidden text-center py-20 bg-white border border-[#E2DFD8] rounded-2xl p-8 max-w-md mx-auto shadow-sm">
+    <div class="w-16 h-16 rounded-full bg-[#F5F5F0] border border-[#DDD8CD] flex items-center justify-center mx-auto mb-4">
+      <i class="fa-solid fa-lock text-[#C15F3D] text-xl"></i>
     </div>
-    <a href="/" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D5D0C5] hover:bg-[#EAE7DF] transition">
-      <i class="fa-solid fa-arrow-left mr-1"></i> Back to Site
-    </a>
+    <h1 class="text-2xl font-serif-claude text-[#1E1E1E] mb-2">Portfolio Management</h1>
+    <p class="text-xs text-[#7D786F] mb-6">Restricted access. Sign in with your authorized admin Google account.</p>
+    
+    <button id="google-login-btn" class="w-full flex items-center justify-center gap-3 bg-white border border-[#D5D0C5] hover:bg-[#F9F8F6] text-[#1E1E1E] text-xs font-semibold py-2.5 px-4 rounded-xl transition shadow-2xs">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4" alt="Google">
+      Sign in with Google
+    </button>
+    <p id="auth-error" class="text-xs text-red-600 mt-4 hidden"></p>
+    <a href="/" class="inline-block text-xs font-mono-code text-[#7D786F] hover:text-[#1E1E1E] mt-6">← Return to website</a>
   </div>
 
-  <!-- Form -->
-  <div class="bg-[#ECE9E1] border border-[#DDD8CD] rounded-2xl p-6 mb-10 shadow-sm">
-    <h2 class="text-base font-semibold text-[#2D2A26] mb-4" id="form-heading">Add New Project</h2>
-    <form id="project-form" class="space-y-4">
-      <input type="hidden" id="edit-id" value="">
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Title</label>
-          <input type="text" id="title" required placeholder="e.g. IOQM Pro" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
-        </div>
-        <div>
-          <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Category / Type</label>
-          <input type="text" id="category" placeholder="e.g. Education, Web App, Tool" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
-        </div>
-      </div>
-
+  <!-- ADMIN DASHBOARD (Only visible after authorized login) -->
+  <div id="admin-panel" class="hidden">
+    <div class="flex items-center justify-between border-b border-[#E2DFD8] pb-6 mb-8">
       <div>
-        <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Description</label>
-        <textarea id="desc" rows="2" required placeholder="What does this project do?" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]"></textarea>
+        <h1 class="text-3xl font-serif-claude font-normal">Project Manager</h1>
+        <p class="text-xs text-[#7D786F] mt-1 font-mono-code" id="admin-user-info"></p>
       </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Live URL</label>
-          <input type="url" id="link" placeholder="https://..." class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
-        </div>
-        <div>
-          <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">GitHub Repo URL</label>
-          <input type="url" id="repo" placeholder="https://github.com/..." class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Tech Tags (comma separated)</label>
-          <input type="text" id="tags" placeholder="e.g. JavaScript, Tailwind, API" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
-        </div>
-        <div>
-          <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Display Order (1 = first)</label>
-          <input type="number" id="order" value="1" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
-        </div>
-      </div>
-
-      <div class="flex gap-2 pt-2">
-        <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#C15F3D] hover:bg-[#a84f32] rounded-lg transition shadow-sm">
-          Save Project
-        </button>
-        <button type="button" id="cancel-edit" class="hidden px-4 py-2 text-sm font-semibold text-[#666] bg-transparent border border-[#DDD] hover:bg-[#DDD] rounded-lg transition">
-          Cancel
+      <div class="flex items-center gap-2">
+        <a href="/" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D5D0C5] bg-white hover:bg-[#EAE7DF] transition">
+          <i class="fa-solid fa-arrow-left mr-1"></i> Site
+        </a>
+        <button id="logout-btn" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition">
+          Sign out
         </button>
       </div>
-    </form>
+    </div>
+
+    <!-- Project Form -->
+    <div class="bg-[#ECE9E1] border border-[#DDD8CD] rounded-2xl p-6 mb-10 shadow-sm">
+      <h2 class="text-base font-semibold text-[#2D2A26] mb-4" id="form-heading">Add New Project</h2>
+      <form id="project-form" class="space-y-4">
+        <input type="hidden" id="edit-id" value="">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Title</label>
+            <input type="text" id="title" required placeholder="e.g. IOQM Pro" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Category / Type</label>
+            <input type="text" id="category" placeholder="e.g. Education, Web App, Tool" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Description</label>
+          <textarea id="desc" rows="2" required placeholder="What does this project do?" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Live URL</label>
+            <input type="url" id="link" placeholder="https://..." class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">GitHub Repo URL</label>
+            <input type="url" id="repo" placeholder="https://github.com/..." class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Tech Tags (comma separated)</label>
+            <input type="text" id="tags" placeholder="e.g. JavaScript, Tailwind, API" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
+          </div>
+          <div>
+            <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Display Order (1 = first)</label>
+            <input type="number" id="order" value="1" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
+          </div>
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#C15F3D] hover:bg-[#a84f32] rounded-lg transition shadow-sm">
+            Save Project
+          </button>
+          <button type="button" id="cancel-edit" class="hidden px-4 py-2 text-sm font-semibold text-[#666] bg-transparent border border-[#DDD] hover:bg-[#DDD] rounded-lg transition">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Live List -->
+    <h2 class="text-lg font-serif-claude font-normal mb-4">Current Projects in Database</h2>
+    <div id="admin-project-list" class="space-y-3">
+      <p class="text-sm text-[#7D786F]">Loading projects...</p>
+    </div>
   </div>
 
-  <!-- Live List -->
-  <h2 class="text-lg font-serif-claude font-normal mb-4">Current Projects in Database</h2>
-  <div id="admin-project-list" class="space-y-3">
-    <p class="text-sm text-[#7D786F]">Loading projects from Firebase...</p>
-  </div>
-
-  <!-- Firebase Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
     import { getDatabase, ref, set, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
-    // PASTE YOUR FIREBASE CONFIG HERE
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_DATABASE_NAME.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyD1WCOzRfz13BBTGnwMLOcNrdJcTxa5Wrs",
+      authDomain: "meoponly-dev.firebaseapp.com",
+      databaseURL: "https://meoponly-dev-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "meoponly-dev",
+      storageBucket: "meoponly-dev.firebasestorage.app",
+      messagingSenderId: "842770018994",
+      appId: "1:842770018994:web:eb2bdf96a9f135a9220fab",
+      measurementId: "G-FZMGWDHHX1"
     };
 
+    const AUTHORIZED_EMAIL = "viraj.munde.iitian@gmail.com";
+
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getDatabase(app);
-    const projectsRef = ref(db, 'projects');
+    const provider = new GoogleAuthProvider();
+
+    const authLoading = document.getElementById('auth-loading');
+    const loginSection = document.getElementById('login-section');
+    const adminPanel = document.getElementById('admin-panel');
+    const authError = document.getElementById('auth-error');
+    const loginBtn = document.getElementById('google-login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const userInfo = document.getElementById('admin-user-info');
 
     const form = document.getElementById('project-form');
     const listEl = document.getElementById('admin-project-list');
@@ -113,18 +156,57 @@
 
     let currentProjects = {};
 
-    onValue(projectsRef, (snapshot) => {
-      const data = snapshot.val() || {};
-      currentProjects = data;
-      renderAdminList(data);
+    // Listen for Auth Changes
+    onAuthStateChanged(auth, (user) => {
+      authLoading.classList.add('hidden');
+      if (user && user.email === AUTHORIZED_EMAIL) {
+        loginSection.classList.add('hidden');
+        adminPanel.classList.remove('hidden');
+        userInfo.innerText = `Signed in as ${user.email}`;
+        listenForProjects();
+      } else {
+        if (user && user.email !== AUTHORIZED_EMAIL) {
+          authError.innerText = `Access denied for ${user.email}. Authorized account only.`;
+          authError.classList.remove('hidden');
+          signOut(auth);
+        }
+        adminPanel.classList.add('hidden');
+        loginSection.classList.remove('hidden');
+      }
     });
+
+    // Login
+    loginBtn.addEventListener('click', async () => {
+      authError.classList.add('hidden');
+      try {
+        await signInWithPopup(auth, provider);
+      } catch (err) {
+        authError.innerText = err.message;
+        authError.classList.remove('hidden');
+      }
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', () => {
+      signOut(auth);
+    });
+
+    // Database Listeners
+    function listenForProjects() {
+      const projectsRef = ref(db, 'projects');
+      onValue(projectsRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        currentProjects = data;
+        renderAdminList(data);
+      });
+    }
 
     function renderAdminList(data) {
       const items = Object.entries(data).map(([id, val]) => ({ id, ...val }));
       items.sort((a, b) => (Number(a.order) || 99) - (Number(b.order) || 99));
 
       if (items.length === 0) {
-        listEl.innerHTML = `<p class="text-sm text-[#7D786F]">No projects stored yet. Add your first project above.</p>`;
+        listEl.innerHTML = `<p class="text-sm text-[#7D786F]">No projects saved yet. Create your first project above.</p>`;
         return;
       }
 
@@ -132,7 +214,7 @@
         <div class="bg-white border border-[#E2DFD8] p-4 rounded-xl flex items-center justify-between shadow-2xs">
           <div>
             <div class="flex items-center gap-2">
-              <span class="text-xs font-mono bg-[#EAE7DF] text-[#7D786F] px-1.5 py-0.5 rounded">#${p.order || '-'}</span>
+              <span class="text-xs font-mono-code bg-[#EAE7DF] text-[#7D786F] px-1.5 py-0.5 rounded">#${p.order || '-'}</span>
               <h3 class="font-medium text-sm text-[#1E1E1E]">${p.title}</h3>
               <span class="text-xs text-[#7D786F]">• ${p.category || 'General'}</span>
             </div>
@@ -162,7 +244,7 @@
       if (id) {
         update(ref(db, `projects/${id}`), projectData).then(resetForm);
       } else {
-        const newRef = push(projectsRef);
+        const newRef = push(ref(db, 'projects'));
         set(newRef, projectData).then(resetForm);
       }
     });
