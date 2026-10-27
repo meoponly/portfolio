@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <!-- SEED CALLOUT (Shown if database is empty) -->
+    <!-- SEED CALLOUT -->
     <div id="seed-box" class="hidden bg-[#EAE7DF] border border-[#DDD8CD] rounded-2xl p-6 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
       <div>
         <h3 class="font-semibold text-sm text-[#1E1E1E]">Database is currently empty</h3>
@@ -68,14 +68,16 @@
 
     <!-- Project Form -->
     <div class="bg-[#ECE9E1] border border-[#DDD8CD] rounded-2xl p-6 mb-10 shadow-sm">
-      <h2 class="text-base font-semibold text-[#2D2A26] mb-4" id="form-heading">Add New Project</h2>
+      <h2 class="text-base font-semibold text-[#2D2A26] mb-1" id="form-heading">Add New Project</h2>
+      <p class="text-xs text-[#7D786F] mb-4" id="form-subheading">New projects automatically become #1 and push existing projects down.</p>
+
       <form id="project-form" class="space-y-4">
         <input type="hidden" id="edit-id" value="">
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Title</label>
-            <input type="text" id="title" required placeholder="e.g. IOQM Pro" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
+            <input type="text" id="title" required placeholder="e.g. My Cool App" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
           </div>
           <div>
             <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Category / Type</label>
@@ -99,20 +101,14 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Tech Tags (comma separated)</label>
-            <input type="text" id="tags" placeholder="e.g. Education, Minimalist" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
-          </div>
-          <div>
-            <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Display Order (1 = first)</label>
-            <input type="number" id="order" value="1" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
-          </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Tech Tags (comma separated)</label>
+          <input type="text" id="tags" placeholder="e.g. Next.js, Tailwind, API" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
         </div>
 
         <div class="flex gap-2 pt-2">
-          <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-[#C15F3D] hover:bg-[#a84f32] rounded-lg transition shadow-sm">
-            Save Project
+          <button type="submit" id="submit-btn" class="px-5 py-2 text-sm font-semibold text-white bg-[#C15F3D] hover:bg-[#a84f32] rounded-lg transition shadow-sm">
+            Add to Top (#1)
           </button>
           <button type="button" id="cancel-edit" class="hidden px-4 py-2 text-sm font-semibold text-[#666] bg-transparent border border-[#DDD] hover:bg-[#DDD] rounded-lg transition">
             Cancel
@@ -121,11 +117,14 @@
       </form>
     </div>
 
-    <!-- Live List -->
+    <!-- Live List with Reorder Arrows -->
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-serif-claude font-normal">Current Projects in Database</h2>
+      <div>
+        <h2 class="text-lg font-serif-claude font-normal">Current Project Order</h2>
+        <p class="text-xs text-[#7D786F]">Use arrows to reorder cleanly without number duplicate issues.</p>
+      </div>
       <button id="resync-seed-btn" class="text-xs text-[#7D786F] hover:text-[#C15F3D] font-mono-code underline">
-        Reset & Reload Default 6 Projects
+        Reset to Default 6
       </button>
     </div>
     <div id="admin-project-list" class="space-y-3">
@@ -229,8 +228,10 @@
     const editIdInput = document.getElementById('edit-id');
     const cancelBtn = document.getElementById('cancel-edit');
     const heading = document.getElementById('form-heading');
+    const subheading = document.getElementById('form-subheading');
+    const submitBtn = document.getElementById('submit-btn');
 
-    let currentProjects = {};
+    let projectList = [];
 
     onAuthStateChanged(auth, (user) => {
       authLoading.classList.add('hidden');
@@ -268,15 +269,13 @@
       const projectsRef = ref(db, 'projects');
       onValue(projectsRef, (snapshot) => {
         const data = snapshot.val() || {};
-        currentProjects = data;
-        renderAdminList(data);
+        projectList = Object.entries(data).map(([id, val]) => ({ id, ...val }));
+        projectList.sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
+        renderAdminList(projectList);
       });
     }
 
-    function renderAdminList(data) {
-      const items = Object.entries(data).map(([id, val]) => ({ id, ...val }));
-      items.sort((a, b) => (Number(a.order) || 99) - (Number(b.order) || 99));
-
+    function renderAdminList(items) {
       if (items.length === 0) {
         seedBox.classList.remove('hidden');
         listEl.innerHTML = `<p class="text-sm text-[#7D786F]">No projects stored yet. Click "Seed 6 Projects" above to populate your database.</p>`;
@@ -284,17 +283,38 @@
       }
 
       seedBox.classList.add('hidden');
-      listEl.innerHTML = items.map(p => `
-        <div class="bg-white border border-[#E2DFD8] p-4 rounded-xl flex items-center justify-between shadow-2xs">
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-mono-code bg-[#EAE7DF] text-[#7D786F] px-1.5 py-0.5 rounded">#${p.order || '-'}</span>
-              <h3 class="font-medium text-sm text-[#1E1E1E]">${p.title}</h3>
-              <span class="text-xs text-[#7D786F]">• ${p.category || 'General'}</span>
+      listEl.innerHTML = items.map((p, index) => `
+        <div class="bg-white border border-[#E2DFD8] p-4 rounded-xl flex items-center justify-between shadow-2xs gap-3">
+          <div class="flex items-center gap-3">
+            <!-- Position & Reorder Arrows -->
+            <div class="flex flex-col items-center justify-center gap-1 bg-[#F5F5F0] border border-[#DDD8CD] px-2 py-1 rounded-lg">
+              <button 
+                onclick="window.moveProject(${index}, -1)" 
+                ${index === 0 ? 'disabled class="opacity-20 cursor-not-allowed text-xs"' : 'class="hover:text-[#C15F3D] text-xs transition"'}
+                title="Move Up"
+              >
+                <i class="fa-solid fa-chevron-up"></i>
+              </button>
+              <span class="text-xs font-mono-code font-bold text-[#1E1E1E]">#${index + 1}</span>
+              <button 
+                onclick="window.moveProject(${index}, 1)" 
+                ${index === items.length - 1 ? 'disabled class="opacity-20 cursor-not-allowed text-xs"' : 'class="hover:text-[#C15F3D] text-xs transition"'}
+                title="Move Down"
+              >
+                <i class="fa-solid fa-chevron-down"></i>
+              </button>
             </div>
-            <p class="text-xs text-[#5C5850] mt-1 line-clamp-1">${p.desc}</p>
+
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-semibold text-sm text-[#1E1E1E]">${p.title}</h3>
+                <span class="text-xs text-[#7D786F]">• ${p.category || 'General'}</span>
+              </div>
+              <p class="text-xs text-[#5C5850] mt-1 line-clamp-1">${p.desc}</p>
+            </div>
           </div>
-          <div class="flex items-center gap-2">
+
+          <div class="flex items-center gap-2 shrink-0">
             <button onclick="window.editProject('${p.id}')" class="text-xs px-2.5 py-1.5 bg-[#F5F5F0] hover:bg-[#EAE7DF] rounded-md transition text-[#1E1E1E]">Edit</button>
             <button onclick="window.deleteProject('${p.id}')" class="text-xs px-2.5 py-1.5 text-red-600 hover:bg-red-50 rounded-md transition">Delete</button>
           </div>
@@ -302,15 +322,113 @@
       `).join('');
     }
 
-    // Seeder Function
-    async function seedDatabase() {
-      const projectsRef = ref(db, 'projects');
-      const seedObj = {};
-      initialProjects.forEach(item => {
-        const newKey = push(projectsRef).key;
-        seedObj[newKey] = item;
+    // Clean Batch Reorder: Swaps positions and re-indexes 1..N so no duplicate values can ever happen
+    window.moveProject = async (index, direction) => {
+      const targetIndex = index + direction;
+      if (targetIndex < 0 || targetIndex >= projectList.length) return;
+
+      // Swap items in memory
+      const temp = projectList[index];
+      projectList[index] = projectList[targetIndex];
+      projectList[targetIndex] = temp;
+
+      // Build atomic batch update
+      const updates = {};
+      projectList.forEach((item, idx) => {
+        item.order = idx + 1;
+        updates[`projects/${item.id}/order`] = idx + 1;
       });
-      await set(projectsRef, seedObj);
+
+      await update(ref(db), updates);
+    };
+
+    // Auto-Shift All Items Down and Place New Project as #1
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = editIdInput.value;
+      const projectData = {
+        title: document.getElementById('title').value.trim(),
+        category: document.getElementById('category').value.trim(),
+        desc: document.getElementById('desc').value.trim(),
+        link: document.getElementById('link').value.trim(),
+        repo: document.getElementById('repo').value.trim(),
+        tags: document.getElementById('tags').value.split(',').map(t => t.trim()).filter(Boolean)
+      };
+
+      if (id) {
+        // Just updating text fields of existing project (keeps its current order)
+        await update(ref(db, `projects/${id}`), projectData);
+      } else {
+        // NEW PROJECT: Shift all existing projects down by 1 so new project is guaranteed #1
+        const updates = {};
+        projectList.forEach((item, idx) => {
+          updates[`projects/${item.id}/order`] = idx + 2;
+        });
+
+        // Push new project at order = 1
+        const newRef = push(ref(db, 'projects'));
+        updates[`projects/${newRef.key}`] = {
+          ...projectData,
+          order: 1
+        };
+
+        await update(ref(db), updates);
+      }
+
+      resetForm();
+    });
+
+    window.editProject = (id) => {
+      const p = projectList.find(item => item.id === id);
+      if (!p) return;
+      editIdInput.value = id;
+      document.getElementById('title').value = p.title || '';
+      document.getElementById('category').value = p.category || '';
+      document.getElementById('desc').value = p.desc || '';
+      document.getElementById('link').value = p.link || '';
+      document.getElementById('repo').value = p.repo || '';
+      document.getElementById('tags').value = (p.tags || []).join(', ');
+
+      heading.innerText = `Edit: ${p.title}`;
+      subheading.innerText = `Order is #${p.order || '-'}. (Use the arrow buttons below in the list to change card position).`;
+      submitBtn.innerText = "Save Changes";
+      cancelBtn.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.deleteProject = async (id) => {
+      if (confirm('Delete this project?')) {
+        await remove(ref(db, `projects/${id}`));
+        // Re-normalize remaining list numbers 1..N
+        const remaining = projectList.filter(item => item.id !== id);
+        const updates = {};
+        remaining.forEach((item, idx) => {
+          updates[`projects/${item.id}/order`] = idx + 1;
+        });
+        if (remaining.length > 0) {
+          await update(ref(db), updates);
+        }
+      }
+    };
+
+    function resetForm() {
+      form.reset();
+      editIdInput.value = '';
+      heading.innerText = 'Add New Project';
+      subheading.innerText = 'New projects automatically become #1 and push existing projects down.';
+      submitBtn.innerText = 'Add to Top (#1)';
+      cancelBtn.classList.add('hidden');
+    }
+
+    cancelBtn.addEventListener('click', resetForm);
+
+    async function seedDatabase() {
+      const updates = {};
+      initialProjects.forEach((item, idx) => {
+        const newKey = push(ref(db, 'projects')).key;
+        updates[`projects/${newKey}`] = { ...item, order: idx + 1 };
+      });
+      await update(ref(db), updates);
     }
 
     seedBtn.addEventListener('click', async () => {
@@ -322,62 +440,11 @@
     });
 
     resyncSeedBtn.addEventListener('click', async () => {
-      if (confirm("Reset and repopulate all default 6 projects to the database?")) {
+      if (confirm("Reset and repopulate all default 6 projects cleanly indexed 1 to 6?")) {
+        await remove(ref(db, 'projects'));
         await seedDatabase();
       }
     });
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const id = editIdInput.value;
-      const projectData = {
-        title: document.getElementById('title').value.trim(),
-        category: document.getElementById('category').value.trim(),
-        desc: document.getElementById('desc').value.trim(),
-        link: document.getElementById('link').value.trim(),
-        repo: document.getElementById('repo').value.trim(),
-        tags: document.getElementById('tags').value.split(',').map(t => t.trim()).filter(Boolean),
-        order: Number(document.getElementById('order').value) || 1
-      };
-
-      if (id) {
-        update(ref(db, `projects/${id}`), projectData).then(resetForm);
-      } else {
-        const newRef = push(ref(db, 'projects'));
-        set(newRef, projectData).then(resetForm);
-      }
-    });
-
-    window.editProject = (id) => {
-      const p = currentProjects[id];
-      if (!p) return;
-      editIdInput.value = id;
-      document.getElementById('title').value = p.title || '';
-      document.getElementById('category').value = p.category || '';
-      document.getElementById('desc').value = p.desc || '';
-      document.getElementById('link').value = p.link || '';
-      document.getElementById('repo').value = p.repo || '';
-      document.getElementById('tags').value = (p.tags || []).join(', ');
-      document.getElementById('order').value = p.order || 1;
-      heading.innerText = `Edit: ${p.title}`;
-      cancelBtn.classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    window.deleteProject = (id) => {
-      if (confirm('Delete this project?')) {
-        remove(ref(db, `projects/${id}`));
-      }
-    };
-
-    function resetForm() {
-      form.reset();
-      editIdInput.value = '';
-      heading.innerText = 'Add New Project';
-      cancelBtn.classList.add('hidden');
-    }
-
-    cancelBtn.addEventListener('click', resetForm);
   </script>
 </body>
 </html>
