@@ -22,7 +22,7 @@
     <p class="text-xs text-[#7D786F] mt-3 font-mono-code">Verifying session...</p>
   </div>
 
-  <!-- LOGIN SCREEN (Shown if not logged in or unauthorized) -->
+  <!-- LOGIN SCREEN -->
   <div id="login-section" class="hidden text-center py-20 bg-white border border-[#E2DFD8] rounded-2xl p-8 max-w-md mx-auto shadow-sm">
     <div class="w-16 h-16 rounded-full bg-[#F5F5F0] border border-[#DDD8CD] flex items-center justify-center mx-auto mb-4">
       <i class="fa-solid fa-lock text-[#C15F3D] text-xl"></i>
@@ -38,7 +38,7 @@
     <a href="/" class="inline-block text-xs font-mono-code text-[#7D786F] hover:text-[#1E1E1E] mt-6">← Return to website</a>
   </div>
 
-  <!-- ADMIN DASHBOARD (Only visible after authorized login) -->
+  <!-- ADMIN DASHBOARD -->
   <div id="admin-panel" class="hidden">
     <div class="flex items-center justify-between border-b border-[#E2DFD8] pb-6 mb-8">
       <div>
@@ -53,6 +53,17 @@
           Sign out
         </button>
       </div>
+    </div>
+
+    <!-- SEED CALLOUT (Shown if database is empty) -->
+    <div id="seed-box" class="hidden bg-[#EAE7DF] border border-[#DDD8CD] rounded-2xl p-6 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div>
+        <h3 class="font-semibold text-sm text-[#1E1E1E]">Database is currently empty</h3>
+        <p class="text-xs text-[#635E55] mt-0.5">Seed your 6 initial portfolio projects into Firebase Realtime Database with one click.</p>
+      </div>
+      <button id="seed-btn" class="px-4 py-2 bg-[#1E1E1E] text-white hover:bg-black rounded-lg text-xs font-medium transition shrink-0">
+        <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Seed 6 Projects
+      </button>
     </div>
 
     <!-- Project Form -->
@@ -91,7 +102,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Tech Tags (comma separated)</label>
-            <input type="text" id="tags" placeholder="e.g. JavaScript, Tailwind, API" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
+            <input type="text" id="tags" placeholder="e.g. Education, Minimalist" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
           </div>
           <div>
             <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Display Order (1 = first)</label>
@@ -111,7 +122,12 @@
     </div>
 
     <!-- Live List -->
-    <h2 class="text-lg font-serif-claude font-normal mb-4">Current Projects in Database</h2>
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-serif-claude font-normal">Current Projects in Database</h2>
+      <button id="resync-seed-btn" class="text-xs text-[#7D786F] hover:text-[#C15F3D] font-mono-code underline">
+        Reset & Reload Default 6 Projects
+      </button>
+    </div>
     <div id="admin-project-list" class="space-y-3">
       <p class="text-sm text-[#7D786F]">Loading projects...</p>
     </div>
@@ -135,6 +151,63 @@
 
     const AUTHORIZED_EMAIL = "viraj.munde.iitian@gmail.com";
 
+    const initialProjects = [
+      {
+        title: "IOQM Pro",
+        category: "Education",
+        desc: "A comprehensive, minimalist collection of chapters & lectures for IOQM preparation.",
+        link: "https://meoponly.github.io/ioqm_pro/",
+        repo: "https://github.com/meoponly",
+        tags: ["Education", "Minimalist"],
+        order: 1
+      },
+      {
+        title: "pwmate",
+        category: "Utility",
+        desc: "Free PhysicsWallah coupons aggregator for unlocking maximum course discounts.",
+        link: "https://pw-mate.netlify.app/",
+        repo: "",
+        tags: ["Utility", "Coupons"],
+        order: 2
+      },
+      {
+        title: "pw pirates",
+        category: "Web App",
+        desc: "Curated open-web movie catalog with a responsive streaming interface.",
+        link: "https://deadpool-pirates.vercel.app/",
+        repo: "https://github.com/meoponly/deadpool-movies",
+        tags: ["Web App", "Media"],
+        order: 3
+      },
+      {
+        title: "ewtube",
+        category: "Web App",
+        desc: "Clean, distraction-free YouTube alternative web interface.",
+        link: "https://meoponly.github.io/ewtube.com/",
+        repo: "https://github.com/meoponly/ewtube.com",
+        tags: ["Web App"],
+        order: 4
+      },
+      {
+        title: "yt4free",
+        category: "Web App",
+        desc: "Cookie-free YouTube watcher for seamless, privacy-centric playback.",
+        link: "https://yt4free.vercel.app/",
+        repo: "https://github.com/meoponly/yt-premium-4free",
+        tags: ["Privacy", "Video"],
+        order: 5
+      },
+      {
+        title: "pseudomation",
+        category: "Productivity",
+        desc: "Minimalist study tracker designed to keep focus clean and measured.",
+        link: "https://pseudomation.vercel.app/",
+        repo: "https://github.com/meoponly/nothing",
+        tags: ["Productivity"],
+        order: 6
+      }
+    ];
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
@@ -147,6 +220,9 @@
     const loginBtn = document.getElementById('google-login-btn');
     const logoutBtn = document.getElementById('logout-btn');
     const userInfo = document.getElementById('admin-user-info');
+    const seedBox = document.getElementById('seed-box');
+    const seedBtn = document.getElementById('seed-btn');
+    const resyncSeedBtn = document.getElementById('resync-seed-btn');
 
     const form = document.getElementById('project-form');
     const listEl = document.getElementById('admin-project-list');
@@ -156,7 +232,6 @@
 
     let currentProjects = {};
 
-    // Listen for Auth Changes
     onAuthStateChanged(auth, (user) => {
       authLoading.classList.add('hidden');
       if (user && user.email === AUTHORIZED_EMAIL) {
@@ -175,7 +250,6 @@
       }
     });
 
-    // Login
     loginBtn.addEventListener('click', async () => {
       authError.classList.add('hidden');
       try {
@@ -186,12 +260,10 @@
       }
     });
 
-    // Logout
     logoutBtn.addEventListener('click', () => {
       signOut(auth);
     });
 
-    // Database Listeners
     function listenForProjects() {
       const projectsRef = ref(db, 'projects');
       onValue(projectsRef, (snapshot) => {
@@ -206,10 +278,12 @@
       items.sort((a, b) => (Number(a.order) || 99) - (Number(b.order) || 99));
 
       if (items.length === 0) {
-        listEl.innerHTML = `<p class="text-sm text-[#7D786F]">No projects saved yet. Create your first project above.</p>`;
+        seedBox.classList.remove('hidden');
+        listEl.innerHTML = `<p class="text-sm text-[#7D786F]">No projects stored yet. Click "Seed 6 Projects" above to populate your database.</p>`;
         return;
       }
 
+      seedBox.classList.add('hidden');
       listEl.innerHTML = items.map(p => `
         <div class="bg-white border border-[#E2DFD8] p-4 rounded-xl flex items-center justify-between shadow-2xs">
           <div>
@@ -227,6 +301,31 @@
         </div>
       `).join('');
     }
+
+    // Seeder Function
+    async function seedDatabase() {
+      const projectsRef = ref(db, 'projects');
+      const seedObj = {};
+      initialProjects.forEach(item => {
+        const newKey = push(projectsRef).key;
+        seedObj[newKey] = item;
+      });
+      await set(projectsRef, seedObj);
+    }
+
+    seedBtn.addEventListener('click', async () => {
+      seedBtn.disabled = true;
+      seedBtn.innerText = "Seeding...";
+      await seedDatabase();
+      seedBtn.disabled = false;
+      seedBtn.innerText = "Seeded!";
+    });
+
+    resyncSeedBtn.addEventListener('click', async () => {
+      if (confirm("Reset and repopulate all default 6 projects to the database?")) {
+        await seedDatabase();
+      }
+    });
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
