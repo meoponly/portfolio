@@ -12,153 +12,205 @@
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F5F5F0; color: #1E1E1E; }
     .font-serif-claude { font-family: 'Newsreader', Georgia, serif; }
     .font-mono-code { font-family: 'JetBrains Mono', monospace; }
+    .sidebar-link.active {
+      background-color: #ECE9E1;
+      color: #1E1E1E;
+      font-weight: 600;
+      border-color: #D5D0C5;
+    }
   </style>
 </head>
-<body class="p-6 md:p-12 max-w-4xl mx-auto selection:bg-[#C15F3D] selection:text-white">
+<body class="min-h-screen bg-[#F5F5F0] selection:bg-[#C15F3D] selection:text-white">
 
   <!-- AUTH LOADING STATE -->
-  <div id="auth-loading" class="text-center py-24">
+  <div id="auth-loading" class="text-center py-24 min-h-screen flex flex-col items-center justify-center">
     <i class="fa-solid fa-circle-notch fa-spin text-2xl text-[#C15F3D]"></i>
     <p class="text-xs text-[#7D786F] mt-3 font-mono-code">Verifying session...</p>
   </div>
 
   <!-- LOGIN SCREEN -->
-  <div id="login-section" class="hidden text-center py-20 bg-white border border-[#E2DFD8] rounded-2xl p-8 max-w-md mx-auto shadow-sm">
-    <div class="w-16 h-16 rounded-full bg-[#F5F5F0] border border-[#DDD8CD] flex items-center justify-center mx-auto mb-4">
-      <i class="fa-solid fa-lock text-[#C15F3D] text-xl"></i>
+  <div id="login-section" class="hidden min-h-screen flex items-center justify-center p-6">
+    <div class="text-center bg-white border border-[#E2DFD8] rounded-2xl p-8 max-w-md w-full shadow-sm">
+      <div class="w-16 h-16 rounded-full bg-[#F5F5F0] border border-[#DDD8CD] flex items-center justify-center mx-auto mb-4">
+        <i class="fa-solid fa-lock text-[#C15F3D] text-xl"></i>
+      </div>
+      <h1 class="text-2xl font-serif-claude text-[#1E1E1E] mb-2">Portfolio Management</h1>
+      <p class="text-xs text-[#7D786F] mb-6">Restricted access. Sign in with your authorized admin Google account.</p>
+      
+      <button id="google-login-btn" class="w-full flex items-center justify-center gap-3 bg-white border border-[#D5D0C5] hover:bg-[#F9F8F6] text-[#1E1E1E] text-xs font-semibold py-2.5 px-4 rounded-xl transition shadow-2xs">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4" alt="Google">
+        Sign in with Google
+      </button>
+      <p id="auth-error" class="text-xs text-red-600 mt-4 hidden"></p>
+      <a href="/" class="inline-block text-xs font-mono-code text-[#7D786F] hover:text-[#1E1E1E] mt-6">← Return to website</a>
     </div>
-    <h1 class="text-2xl font-serif-claude text-[#1E1E1E] mb-2">Portfolio Management</h1>
-    <p class="text-xs text-[#7D786F] mb-6">Restricted access. Sign in with your authorized admin Google account.</p>
-    
-    <button id="google-login-btn" class="w-full flex items-center justify-center gap-3 bg-white border border-[#D5D0C5] hover:bg-[#F9F8F6] text-[#1E1E1E] text-xs font-semibold py-2.5 px-4 rounded-xl transition shadow-2xs">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4" alt="Google">
-      Sign in with Google
-    </button>
-    <p id="auth-error" class="text-xs text-red-600 mt-4 hidden"></p>
-    <a href="/" class="inline-block text-xs font-mono-code text-[#7D786F] hover:text-[#1E1E1E] mt-6">← Return to website</a>
   </div>
 
-  <!-- ADMIN DASHBOARD -->
-  <div id="admin-panel" class="hidden">
-    <div class="flex items-center justify-between border-b border-[#E2DFD8] pb-6 mb-8">
+  <!-- ADMIN SHELL -->
+  <div id="admin-panel" class="hidden min-h-screen flex flex-col md:flex-row">
+    
+    <!-- SIDEBAR -->
+    <aside class="w-full md:w-64 bg-[#ECE9E1] border-b md:border-b-0 md:border-r border-[#DDD8CD] p-6 flex flex-col justify-between shrink-0">
       <div>
-        <h1 class="text-3xl font-serif-claude font-normal">Dashboard & Analytics</h1>
-        <p class="text-xs text-[#7D786F] mt-1 font-mono-code" id="admin-user-info"></p>
+        <!-- Brand / Identity -->
+        <div class="flex items-center gap-3 mb-8">
+          <img src="https://github.com/meoponly.png" alt="Avatar" class="w-9 h-9 rounded-full border border-[#D5D0C5] object-cover">
+          <div>
+            <h2 class="text-base font-serif-claude font-semibold leading-tight text-[#1E1E1E]">Meoponly Admin</h2>
+            <p class="text-[10px] text-[#7D786F] font-mono-code truncate max-w-[140px]" id="sidebar-email">admin</p>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="space-y-1.5">
+          <button onclick="switchTab('projects')" id="nav-btn-projects" class="sidebar-link active w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs text-[#545048] hover:bg-[#E2DFD6] border border-transparent transition">
+            <i class="fa-solid fa-layer-group text-sm w-4 text-center"></i>
+            <span>Projects</span>
+          </button>
+          <button onclick="switchTab('analytics')" id="nav-btn-analytics" class="sidebar-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs text-[#545048] hover:bg-[#E2DFD6] border border-transparent transition">
+            <i class="fa-solid fa-chart-line text-sm w-4 text-center"></i>
+            <span>Visitors & Analytics</span>
+          </button>
+        </nav>
       </div>
-      <div class="flex items-center gap-2">
-        <a href="/" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D5D0C5] bg-white hover:bg-[#EAE7DF] transition">
-          <i class="fa-solid fa-arrow-left mr-1"></i> Site
+
+      <!-- Sidebar Footer -->
+      <div class="pt-6 border-t border-[#DDD8CD] mt-6 md:mt-0 flex items-center justify-between gap-2">
+        <a href="/" class="text-xs text-[#545048] hover:text-[#1E1E1E] font-medium flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> View Site
         </a>
-        <button id="logout-btn" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition">
+        <button id="logout-btn" class="text-xs font-semibold px-2.5 py-1 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition">
           Sign out
         </button>
       </div>
-    </div>
+    </aside>
 
-    <!-- VISITOR STATS CARDS -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-      <div class="bg-white border border-[#E2DFD8] p-5 rounded-2xl shadow-2xs">
-        <span class="text-xs font-medium text-[#7A756D] block mb-1">Total Pageviews</span>
-        <span id="stat-total" class="text-2xl font-bold font-mono-code text-[#1E1E1E]">0</span>
-      </div>
-      <div class="bg-white border border-[#E2DFD8] p-5 rounded-2xl shadow-2xs">
-        <span class="text-xs font-medium text-[#7A756D] block mb-1">Unique Visitors</span>
-        <span id="stat-unique" class="text-2xl font-bold font-mono-code text-emerald-600">0</span>
-      </div>
-      <div class="bg-white border border-[#E2DFD8] p-5 rounded-2xl shadow-2xs">
-        <span class="text-xs font-medium text-[#7A756D] block mb-1">Repeated Visits</span>
-        <span id="stat-repeat" class="text-2xl font-bold font-mono-code text-[#C15F3D]">0</span>
-      </div>
-    </div>
+    <!-- MAIN CONTENT VIEW -->
+    <main class="flex-1 p-6 md:p-12 max-w-4xl overflow-y-auto">
 
-    <!-- RECENT VISITORS LIST (COLLAPSIBLE / ACCORDION) -->
-    <div class="bg-white border border-[#E2DFD8] rounded-2xl p-5 mb-10 shadow-2xs">
-      <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('recent-visitors-box').classList.toggle('hidden')">
-        <h3 class="text-sm font-semibold text-[#1E1E1E] flex items-center gap-2">
-          <i class="fa-solid fa-users text-[#C15F3D]"></i> Recent Visitor Activity Log
-        </h3>
-        <span class="text-xs text-[#7A756D] font-mono-code hover:underline">Toggle Details</span>
-      </div>
-      <div id="recent-visitors-box" class="mt-4 pt-4 border-t border-[#ECE9E1] space-y-2 max-h-56 overflow-y-auto">
-        <p class="text-xs text-[#7A756D]">Waiting for visitor activity...</p>
-      </div>
-    </div>
-
-    <!-- SEED CALLOUT -->
-    <div id="seed-box" class="hidden bg-[#EAE7DF] border border-[#DDD8CD] rounded-2xl p-6 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-      <div>
-        <h3 class="font-semibold text-sm text-[#1E1E1E]">Database is currently empty</h3>
-        <p class="text-xs text-[#635E55] mt-0.5">Seed your 6 initial portfolio projects into Firebase Realtime Database with one click.</p>
-      </div>
-      <button id="seed-btn" class="px-4 py-2 bg-[#1E1E1E] text-white hover:bg-black rounded-lg text-xs font-medium transition shrink-0">
-        <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Seed 6 Projects
-      </button>
-    </div>
-
-    <!-- Project Form -->
-    <div class="bg-[#ECE9E1] border border-[#DDD8CD] rounded-2xl p-6 mb-10 shadow-sm">
-      <h2 class="text-base font-semibold text-[#2D2A26] mb-1" id="form-heading">Add New Project</h2>
-      <p class="text-xs text-[#7D786F] mb-4" id="form-subheading">New projects automatically become #1 and push existing projects down.</p>
-
-      <form id="project-form" class="space-y-4">
-        <input type="hidden" id="edit-id" value="">
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Title</label>
-            <input type="text" id="title" required placeholder="e.g. My Cool App" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
-          </div>
-          <div>
-            <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Category / Type</label>
-            <input type="text" id="category" placeholder="e.g. Education, Web App, Tool" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
-          </div>
+      <!-- ================= SECTION 1: PROJECTS ================= -->
+      <section id="section-projects">
+        <div class="border-b border-[#E2DFD8] pb-5 mb-8">
+          <h1 class="text-3xl font-serif-claude font-normal">Projects Management</h1>
+          <p class="text-xs text-[#7D786F] mt-1">Add, edit details, and reorder projects displayed on your portfolio.</p>
         </div>
 
-        <div>
-          <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Description</label>
-          <textarea id="desc" rows="2" required placeholder="What does this project do?" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]"></textarea>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Seed Callout (if DB empty) -->
+        <div id="seed-box" class="hidden bg-[#EAE7DF] border border-[#DDD8CD] rounded-2xl p-6 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Live URL</label>
-            <input type="url" id="link" placeholder="https://..." class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
+            <h3 class="font-semibold text-sm text-[#1E1E1E]">Database is currently empty</h3>
+            <p class="text-xs text-[#635E55] mt-0.5">Seed your 6 initial portfolio projects into Firebase Realtime Database with one click.</p>
           </div>
-          <div>
-            <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">GitHub Repo URL</label>
-            <input type="url" id="repo" placeholder="https://github.com/..." class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Tech Tags (comma separated)</label>
-          <input type="text" id="tags" placeholder="e.g. Next.js, Tailwind, API" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
-        </div>
-
-        <div class="flex gap-2 pt-2">
-          <button type="submit" id="submit-btn" class="px-5 py-2 text-sm font-semibold text-white bg-[#C15F3D] hover:bg-[#a84f32] rounded-lg transition shadow-sm">
-            Add to Top (#1)
-          </button>
-          <button type="button" id="cancel-edit" class="hidden px-4 py-2 text-sm font-semibold text-[#666] bg-transparent border border-[#DDD] hover:bg-[#DDD] rounded-lg transition">
-            Cancel
+          <button id="seed-btn" class="px-4 py-2 bg-[#1E1E1E] text-white hover:bg-black rounded-lg text-xs font-medium transition shrink-0">
+            <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Seed 6 Projects
           </button>
         </div>
-      </form>
-    </div>
 
-    <!-- Live Project List with Reorder Controls -->
-    <div class="flex items-center justify-between mb-4">
-      <div>
-        <h2 class="text-lg font-serif-claude font-normal">Current Project Order</h2>
-        <p class="text-xs text-[#7D786F]">Use arrows to reorder cleanly without duplicate collisions.</p>
-      </div>
-      <button id="resync-seed-btn" class="text-xs text-[#7D786F] hover:text-[#C15F3D] font-mono-code underline">
-        Reset to Default 6
-      </button>
-    </div>
-    <div id="admin-project-list" class="space-y-3">
-      <p class="text-sm text-[#7D786F]">Loading projects...</p>
-    </div>
+        <!-- Project Form -->
+        <div class="bg-[#ECE9E1] border border-[#DDD8CD] rounded-2xl p-6 mb-10 shadow-sm">
+          <h2 class="text-base font-semibold text-[#2D2A26] mb-1" id="form-heading">Add New Project</h2>
+          <p class="text-xs text-[#7D786F] mb-4" id="form-subheading">New projects automatically become #1 and push existing projects down.</p>
+
+          <form id="project-form" class="space-y-4">
+            <input type="hidden" id="edit-id" value="">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Title</label>
+                <input type="text" id="title" required placeholder="e.g. My Cool App" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
+              </div>
+              <div>
+                <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Category / Type</label>
+                <input type="text" id="category" placeholder="e.g. Education, Web App, Tool" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Description</label>
+              <textarea id="desc" rows="2" required placeholder="What does this project do?" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Live URL</label>
+                <input type="url" id="link" placeholder="https://..." class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
+              </div>
+              <div>
+                <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">GitHub Repo URL</label>
+                <input type="url" id="repo" placeholder="https://github.com/..." class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs uppercase tracking-wider font-semibold text-[#7D786F] mb-1">Tech Tags (comma separated)</label>
+              <input type="text" id="tags" placeholder="e.g. Next.js, Tailwind, API" class="w-full px-3 py-2 text-sm bg-white border border-[#D5D0C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#C15F3D]">
+            </div>
+
+            <div class="flex gap-2 pt-2">
+              <button type="submit" id="submit-btn" class="px-5 py-2 text-sm font-semibold text-white bg-[#C15F3D] hover:bg-[#a84f32] rounded-lg transition shadow-sm">
+                Add to Top (#1)
+              </button>
+              <button type="button" id="cancel-edit" class="hidden px-4 py-2 text-sm font-semibold text-[#666] bg-transparent border border-[#DDD] hover:bg-[#DDD] rounded-lg transition">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Project List with Up/Down Controls -->
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-lg font-serif-claude font-normal">Current Project Order</h2>
+            <p class="text-xs text-[#7D786F]">Use arrows to swap ranks cleanly without collisions.</p>
+          </div>
+          <button id="resync-seed-btn" class="text-xs text-[#7D786F] hover:text-[#C15F3D] font-mono-code underline">
+            Reset to Default 6
+          </button>
+        </div>
+        <div id="admin-project-list" class="space-y-3">
+          <p class="text-sm text-[#7D786F]">Loading projects...</p>
+        </div>
+      </section>
+
+      <!-- ================= SECTION 2: ANALYTICS ================= -->
+      <section id="section-analytics" class="hidden">
+        <div class="border-b border-[#E2DFD8] pb-5 mb-8">
+          <h1 class="text-3xl font-serif-claude font-normal">Visitors & Analytics</h1>
+          <p class="text-xs text-[#7D786F] mt-1">Real-time aggregate visitors, repeated user metrics, and raw session traffic logs.</p>
+        </div>
+
+        <!-- Top Counter Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <div class="bg-white border border-[#E2DFD8] p-5 rounded-2xl shadow-2xs">
+            <span class="text-xs font-medium text-[#7A756D] block mb-1">Total Pageviews</span>
+            <span id="stat-total" class="text-3xl font-bold font-mono-code text-[#1E1E1E]">0</span>
+          </div>
+          <div class="bg-white border border-[#E2DFD8] p-5 rounded-2xl shadow-2xs">
+            <span class="text-xs font-medium text-[#7A756D] block mb-1">Unique Visitors</span>
+            <span id="stat-unique" class="text-3xl font-bold font-mono-code text-emerald-600">0</span>
+          </div>
+          <div class="bg-white border border-[#E2DFD8] p-5 rounded-2xl shadow-2xs">
+            <span class="text-xs font-medium text-[#7A756D] block mb-1">Repeated Visits</span>
+            <span id="stat-repeat" class="text-3xl font-bold font-mono-code text-[#C15F3D]">0</span>
+          </div>
+        </div>
+
+        <!-- Activity Feed Table/Cards -->
+        <div class="bg-white border border-[#E2DFD8] rounded-2xl p-6 shadow-2xs">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-semibold text-[#1E1E1E] flex items-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left text-[#C15F3D]"></i> Live Visitor Feed
+            </h3>
+            <span class="text-xs text-[#7A756D] font-mono-code">Latest 50 visits</span>
+          </div>
+
+          <div id="recent-visitors-box" class="space-y-2 max-h-[500px] overflow-y-auto pr-1">
+            <p class="text-xs text-[#7A756D]">Waiting for visitor activity...</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
   </div>
 
   <script type="module">
@@ -247,7 +299,7 @@
     const authError = document.getElementById('auth-error');
     const loginBtn = document.getElementById('google-login-btn');
     const logoutBtn = document.getElementById('logout-btn');
-    const userInfo = document.getElementById('admin-user-info');
+    const sidebarEmail = document.getElementById('sidebar-email');
     const seedBox = document.getElementById('seed-box');
     const seedBtn = document.getElementById('seed-btn');
     const resyncSeedBtn = document.getElementById('resync-seed-btn');
@@ -262,12 +314,32 @@
 
     let projectList = [];
 
+    // Tab Navigation Logic
+    window.switchTab = (tabName) => {
+      const secProjects = document.getElementById('section-projects');
+      const secAnalytics = document.getElementById('section-analytics');
+      const navProjects = document.getElementById('nav-btn-projects');
+      const navAnalytics = document.getElementById('nav-btn-analytics');
+
+      if (tabName === 'projects') {
+        secProjects.classList.remove('hidden');
+        secAnalytics.classList.add('hidden');
+        navProjects.classList.add('active');
+        navAnalytics.classList.remove('active');
+      } else {
+        secProjects.classList.add('hidden');
+        secAnalytics.classList.remove('hidden');
+        navProjects.classList.remove('active');
+        navAnalytics.classList.add('active');
+      }
+    };
+
     onAuthStateChanged(auth, (user) => {
       authLoading.classList.add('hidden');
       if (user && user.email === AUTHORIZED_EMAIL) {
         loginSection.classList.add('hidden');
         adminPanel.classList.remove('hidden');
-        userInfo.innerText = `Signed in as ${user.email}`;
+        sidebarEmail.innerText = user.email;
         listenForProjects();
         listenForAnalytics();
       } else {
@@ -295,9 +367,7 @@
       signOut(auth);
     });
 
-    // LISTEN FOR VISITOR ANALYTICS
     function listenForAnalytics() {
-      // 1. Overall aggregated counts
       const statsRef = ref(db, 'analytics/stats');
       onValue(statsRef, (snapshot) => {
         const stats = snapshot.val() || { totalViews: 0, uniqueVisitors: 0, repeatedVisits: 0 };
@@ -306,11 +376,10 @@
         document.getElementById('stat-repeat').innerText = stats.repeatedVisits || 0;
       });
 
-      // 2. Individual recent logs
       const visitsRef = ref(db, 'analytics/visits');
       onValue(visitsRef, (snapshot) => {
         const data = snapshot.val() || {};
-        const logs = Object.values(data).reverse().slice(0, 30); // show last 30
+        const logs = Object.values(data).reverse().slice(0, 50);
         const container = document.getElementById('recent-visitors-box');
         
         if (logs.length === 0) {
@@ -321,12 +390,12 @@
         container.innerHTML = logs.map(l => {
           const dateStr = new Date(l.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' });
           return `
-            <div class="flex items-center justify-between text-xs py-1.5 px-2 bg-[#F9F8F6] rounded-lg border border-[#EDEAE3]">
-              <div class="flex items-center gap-2">
+            <div class="flex items-center justify-between text-xs py-2 px-3 bg-[#F9F8F6] rounded-xl border border-[#EDEAE3]">
+              <div class="flex items-center gap-2.5">
                 <span class="inline-block w-2 h-2 rounded-full ${l.isRepeat ? 'bg-[#C15F3D]' : 'bg-emerald-500'}"></span>
-                <span class="font-mono-code text-[#444]">${l.uid.slice(0, 10)}...</span>
-                <span class="text-[10px] px-1.5 py-0.5 rounded ${l.isRepeat ? 'bg-orange-100 text-orange-800' : 'bg-emerald-100 text-emerald-800'}">
-                  ${l.isRepeat ? `Visit #${l.count}` : 'New Visitor'}
+                <span class="font-mono-code text-[#444]">${l.uid ? l.uid.slice(0, 10) : 'Anon'}...</span>
+                <span class="text-[10px] px-2 py-0.5 rounded font-medium ${l.isRepeat ? 'bg-orange-100 text-orange-800' : 'bg-emerald-100 text-emerald-800'}">
+                  ${l.isRepeat ? `Visit #${l.count}` : 'Unique First Visit'}
                 </span>
               </div>
               <span class="text-[#7A756D] font-mono-code text-[11px]">${dateStr}</span>
