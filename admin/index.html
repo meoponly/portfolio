@@ -42,7 +42,7 @@
   <div id="admin-panel" class="hidden">
     <div class="flex items-center justify-between border-b border-[#E2DFD8] pb-6 mb-8">
       <div>
-        <h1 class="text-3xl font-serif-claude font-normal">Project Manager</h1>
+        <h1 class="text-3xl font-serif-claude font-normal">Dashboard & Analytics</h1>
         <p class="text-xs text-[#7D786F] mt-1 font-mono-code" id="admin-user-info"></p>
       </div>
       <div class="flex items-center gap-2">
@@ -52,6 +52,35 @@
         <button id="logout-btn" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition">
           Sign out
         </button>
+      </div>
+    </div>
+
+    <!-- VISITOR STATS CARDS -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div class="bg-white border border-[#E2DFD8] p-5 rounded-2xl shadow-2xs">
+        <span class="text-xs font-medium text-[#7A756D] block mb-1">Total Pageviews</span>
+        <span id="stat-total" class="text-2xl font-bold font-mono-code text-[#1E1E1E]">0</span>
+      </div>
+      <div class="bg-white border border-[#E2DFD8] p-5 rounded-2xl shadow-2xs">
+        <span class="text-xs font-medium text-[#7A756D] block mb-1">Unique Visitors</span>
+        <span id="stat-unique" class="text-2xl font-bold font-mono-code text-emerald-600">0</span>
+      </div>
+      <div class="bg-white border border-[#E2DFD8] p-5 rounded-2xl shadow-2xs">
+        <span class="text-xs font-medium text-[#7A756D] block mb-1">Repeated Visits</span>
+        <span id="stat-repeat" class="text-2xl font-bold font-mono-code text-[#C15F3D]">0</span>
+      </div>
+    </div>
+
+    <!-- RECENT VISITORS LIST (COLLAPSIBLE / ACCORDION) -->
+    <div class="bg-white border border-[#E2DFD8] rounded-2xl p-5 mb-10 shadow-2xs">
+      <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('recent-visitors-box').classList.toggle('hidden')">
+        <h3 class="text-sm font-semibold text-[#1E1E1E] flex items-center gap-2">
+          <i class="fa-solid fa-users text-[#C15F3D]"></i> Recent Visitor Activity Log
+        </h3>
+        <span class="text-xs text-[#7A756D] font-mono-code hover:underline">Toggle Details</span>
+      </div>
+      <div id="recent-visitors-box" class="mt-4 pt-4 border-t border-[#ECE9E1] space-y-2 max-h-56 overflow-y-auto">
+        <p class="text-xs text-[#7A756D]">Waiting for visitor activity...</p>
       </div>
     </div>
 
@@ -117,11 +146,11 @@
       </form>
     </div>
 
-    <!-- Live List with Reorder Arrows -->
+    <!-- Live Project List with Reorder Controls -->
     <div class="flex items-center justify-between mb-4">
       <div>
         <h2 class="text-lg font-serif-claude font-normal">Current Project Order</h2>
-        <p class="text-xs text-[#7D786F]">Use arrows to reorder cleanly without number duplicate issues.</p>
+        <p class="text-xs text-[#7D786F]">Use arrows to reorder cleanly without duplicate collisions.</p>
       </div>
       <button id="resync-seed-btn" class="text-xs text-[#7D786F] hover:text-[#C15F3D] font-mono-code underline">
         Reset to Default 6
@@ -240,6 +269,7 @@
         adminPanel.classList.remove('hidden');
         userInfo.innerText = `Signed in as ${user.email}`;
         listenForProjects();
+        listenForAnalytics();
       } else {
         if (user && user.email !== AUTHORIZED_EMAIL) {
           authError.innerText = `Access denied for ${user.email}. Authorized account only.`;
@@ -265,6 +295,47 @@
       signOut(auth);
     });
 
+    // LISTEN FOR VISITOR ANALYTICS
+    function listenForAnalytics() {
+      // 1. Overall aggregated counts
+      const statsRef = ref(db, 'analytics/stats');
+      onValue(statsRef, (snapshot) => {
+        const stats = snapshot.val() || { totalViews: 0, uniqueVisitors: 0, repeatedVisits: 0 };
+        document.getElementById('stat-total').innerText = stats.totalViews || 0;
+        document.getElementById('stat-unique').innerText = stats.uniqueVisitors || 0;
+        document.getElementById('stat-repeat').innerText = stats.repeatedVisits || 0;
+      });
+
+      // 2. Individual recent logs
+      const visitsRef = ref(db, 'analytics/visits');
+      onValue(visitsRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        const logs = Object.values(data).reverse().slice(0, 30); // show last 30
+        const container = document.getElementById('recent-visitors-box');
+        
+        if (logs.length === 0) {
+          container.innerHTML = `<p class="text-xs text-[#7A756D]">No visits logged yet.</p>`;
+          return;
+        }
+
+        container.innerHTML = logs.map(l => {
+          const dateStr = new Date(l.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' });
+          return `
+            <div class="flex items-center justify-between text-xs py-1.5 px-2 bg-[#F9F8F6] rounded-lg border border-[#EDEAE3]">
+              <div class="flex items-center gap-2">
+                <span class="inline-block w-2 h-2 rounded-full ${l.isRepeat ? 'bg-[#C15F3D]' : 'bg-emerald-500'}"></span>
+                <span class="font-mono-code text-[#444]">${l.uid.slice(0, 10)}...</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded ${l.isRepeat ? 'bg-orange-100 text-orange-800' : 'bg-emerald-100 text-emerald-800'}">
+                  ${l.isRepeat ? `Visit #${l.count}` : 'New Visitor'}
+                </span>
+              </div>
+              <span class="text-[#7A756D] font-mono-code text-[11px]">${dateStr}</span>
+            </div>
+          `;
+        }).join('');
+      });
+    }
+
     function listenForProjects() {
       const projectsRef = ref(db, 'projects');
       onValue(projectsRef, (snapshot) => {
@@ -286,7 +357,6 @@
       listEl.innerHTML = items.map((p, index) => `
         <div class="bg-white border border-[#E2DFD8] p-4 rounded-xl flex items-center justify-between shadow-2xs gap-3">
           <div class="flex items-center gap-3">
-            <!-- Position & Reorder Arrows -->
             <div class="flex flex-col items-center justify-center gap-1 bg-[#F5F5F0] border border-[#DDD8CD] px-2 py-1 rounded-lg">
               <button 
                 onclick="window.moveProject(${index}, -1)" 
@@ -322,17 +392,14 @@
       `).join('');
     }
 
-    // Clean Batch Reorder: Swaps positions and re-indexes 1..N so no duplicate values can ever happen
     window.moveProject = async (index, direction) => {
       const targetIndex = index + direction;
       if (targetIndex < 0 || targetIndex >= projectList.length) return;
 
-      // Swap items in memory
       const temp = projectList[index];
       projectList[index] = projectList[targetIndex];
       projectList[targetIndex] = temp;
 
-      // Build atomic batch update
       const updates = {};
       projectList.forEach((item, idx) => {
         item.order = idx + 1;
@@ -342,7 +409,6 @@
       await update(ref(db), updates);
     };
 
-    // Auto-Shift All Items Down and Place New Project as #1
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const id = editIdInput.value;
@@ -356,16 +422,13 @@
       };
 
       if (id) {
-        // Just updating text fields of existing project (keeps its current order)
         await update(ref(db, `projects/${id}`), projectData);
       } else {
-        // NEW PROJECT: Shift all existing projects down by 1 so new project is guaranteed #1
         const updates = {};
         projectList.forEach((item, idx) => {
           updates[`projects/${item.id}/order`] = idx + 2;
         });
 
-        // Push new project at order = 1
         const newRef = push(ref(db, 'projects'));
         updates[`projects/${newRef.key}`] = {
           ...projectData,
@@ -399,7 +462,6 @@
     window.deleteProject = async (id) => {
       if (confirm('Delete this project?')) {
         await remove(ref(db, `projects/${id}`));
-        // Re-normalize remaining list numbers 1..N
         const remaining = projectList.filter(item => item.id !== id);
         const updates = {};
         remaining.forEach((item, idx) => {
