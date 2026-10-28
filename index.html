@@ -129,10 +129,10 @@
     <img src="deadpool.png" alt="Deadpool" style="width: 245px; display: block; user-select: none;">
   </div>
 
-  <!-- Firebase Live Database Script -->
+  <!-- Firebase Live Database & Analytics Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+    import { getDatabase, ref, onValue, push, runTransaction } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD1WCOzRfz13BBTGnwMLOcNrdJcTxa5Wrs",
@@ -224,8 +224,9 @@
     try {
       const app = initializeApp(firebaseConfig);
       const db = getDatabase(app);
-      const projectsRef = ref(db, 'projects');
 
+      // Projects Listener
+      const projectsRef = ref(db, 'projects');
       onValue(projectsRef, (snapshot) => {
         const val = snapshot.val();
         if (val) {
@@ -240,6 +241,59 @@
           renderCards(fallbackProjects);
         }
       }, () => renderCards(fallbackProjects));
+
+      // VISITOR TRACKING LOGIC
+      function trackVisitor() {
+        const now = Date.now();
+        let visitorId = localStorage.getItem('meop_uid');
+        let visitCount = parseInt(localStorage.getItem('meop_vcount') || '0', 10);
+        let isRepeated = false;
+
+        if (!visitorId) {
+          visitorId = 'v_' + Math.random().toString(36).substring(2, 11) + '_' + now.toString(36);
+          localStorage.setItem('meop_uid', visitorId);
+          visitCount = 1;
+        } else {
+          visitCount += 1;
+          isRepeated = true;
+        }
+        localStorage.setItem('meop_vcount', visitCount.toString());
+
+        // Update overall stats counters atomically
+        const statsRef = ref(db, 'analytics/stats');
+        runTransaction(statsRef, (current) => {
+          if (!current) {
+            return {
+              totalViews: 1,
+              uniqueVisitors: isRepeated ? 0 : 1,
+              repeatedVisits: isRepeated ? 1 : 0
+            };
+          }
+          return {
+            totalViews: (current.totalViews || 0) + 1,
+            uniqueVisitors: isRepeated ? (current.uniqueVisitors || 0) : (current.uniqueVisitors || 0) + 1,
+            repeatedVisits: isRepeated ? (current.repeatedVisits || 0) + 1 : (current.repeatedVisits || 0)
+          };
+        });
+
+        // Record individual session log entry
+        const visitsListRef = ref(db, 'analytics/visits');
+        push(visitsListRef, {
+          uid: visitorId,
+          count: visitCount,
+          isRepeat: isRepeated,
+          timestamp: now,
+          referrer: document.referrer || 'Direct',
+          userAgent: navigator.userAgent.substring(0, 100)
+        });
+      }
+
+      // Record visit only once per session tab load
+      if (!sessionStorage.getItem('meop_session_logged')) {
+        trackVisitor();
+        sessionStorage.setItem('meop_session_logged', 'true');
+      }
+
     } catch (err) {
       console.warn("Using fallback local projects:", err);
       renderCards(fallbackProjects);
