@@ -13,7 +13,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
-  <!-- Claude-style Typography: Newsreader (Editorial Serif) & Plus Jakarta Sans (Clean UI Sans) -->
+  <!-- Claude-style Typography: Newsreader & Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -49,21 +49,41 @@
       background: #E2DFD6;
       border-color: #BDB7AA;
     }
-    /* Contributions Grid Styling */
+
+    /* Fixed size cells with clean gaps so they never turn into specks */
+    .gh-scroll-area {
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #D5D0C5 transparent;
+      -webkit-overflow-scrolling: touch;
+    }
+    .gh-scroll-area::-webkit-scrollbar {
+      height: 4px;
+    }
+    .gh-scroll-area::-webkit-scrollbar-thumb {
+      background: #D5D0C5;
+      border-radius: 4px;
+    }
+    .gh-wrapper {
+      min-width: 640px; /* guarantees square aspect ratio on all mobile screens */
+      width: 100%;
+    }
     .gh-grid {
       display: grid;
-      grid-template-rows: repeat(7, 1fr);
+      grid-template-rows: repeat(7, 10px);
       grid-auto-flow: column;
-      grid-auto-columns: minmax(0, 1fr);
-      gap: 3.5px;
+      grid-auto-columns: 10px;
+      gap: 3px;
+      justify-content: space-between;
     }
     .gh-cell {
-      aspect-ratio: 1 / 1;
-      border-radius: 2.5px;
-      transition: transform 0.15s ease, outline 0.15s ease;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      transition: transform 0.1s ease;
     }
     .gh-cell:hover {
-      transform: scale(1.3);
+      transform: scale(1.4);
       outline: 1.5px solid #1E1E1E;
       z-index: 10;
     }
@@ -72,12 +92,32 @@
     .gh-l2 { background-color: #EAA389; }
     .gh-l3 { background-color: #C15F3D; }
     .gh-l4 { background-color: #87381F; }
+
+    /* Responsive deadpool positioning */
+    .deadpool-peeker {
+      position: fixed;
+      bottom: -106px;
+      left: -51px;
+      transform: rotate(15deg);
+      z-index: 40;
+      pointer-events: none;
+      transition: transform 0.2s ease;
+    }
+    @media (max-width: 640px) {
+      .deadpool-peeker {
+        bottom: -90px;
+        left: -40px;
+      }
+      .deadpool-peeker img {
+        width: 190px !important;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-[#C15F3D] selection:text-white relative">
 
   <!-- Main Content Container -->
-  <main class="max-w-5xl mx-auto px-6 py-12 md:py-16 w-full">
+  <main class="max-w-5xl mx-auto px-5 sm:px-6 py-10 md:py-16 w-full">
 
     <!-- Profile Header -->
     <header class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-10 border-b border-[#E2DFD8]">
@@ -85,11 +125,11 @@
         <img 
           src="https://github.com/meoponly.png" 
           alt="Meoponly profile" 
-          class="w-20 h-20 rounded-full border-2 border-[#D5D0C5] shadow-xs object-cover"
+          class="w-20 h-20 rounded-full border-2 border-[#D5D0C5] shadow-xs object-cover shrink-0"
           onerror="this.src='https://ui-avatars.com/api/?name=Meoponly&background=C15F3D&color=fff&size=128'"
         >
         <div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2.5 flex-wrap">
             <h1 class="text-3xl md:text-4xl font-serif-claude font-normal tracking-tight text-[#1E1E1E]">Meoponly</h1>
             <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono-code bg-[#EAE7DF] text-[#635E55] border border-[#DDD8CD]">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> student & builder
@@ -115,12 +155,12 @@
       </div>
     </header>
 
-    <!-- Native Minimalist GitHub Activity Section -->
+    <!-- GitHub Activity Section -->
     <section class="mt-12">
       <div class="flex items-center justify-between mb-4">
         <div>
           <h2 class="text-2xl font-serif-claude font-normal text-[#1E1E1E]">Activity</h2>
-          <p class="text-xs text-[#7D786F] mt-0.5" id="gh-summary-text">Yearly commit history on open-source repositories.</p>
+          <p class="text-xs text-[#7D786F] mt-0.5">Yearly commit history on open-source repositories.</p>
         </div>
         <a href="https://github.com/meoponly" target="_blank" rel="noopener" class="text-xs font-mono-code text-[#7D786F] hover:text-[#C15F3D] transition flex items-center gap-1.5">
           <span>@meoponly</span>
@@ -131,20 +171,27 @@
       <!-- Clean Activity Card -->
       <div class="card-claude p-5 md:p-6 rounded-2xl">
         
-        <!-- Months Header Row -->
-        <div id="gh-months" class="flex justify-between text-[11px] font-mono-code text-[#948F85] mb-2 px-1 select-none">
-          <span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span>
+        <!-- Responsive Scroll Area -->
+        <div id="gh-scroll-container" class="gh-scroll-area pb-2">
+          <div class="gh-wrapper">
+            
+            <!-- Months Header Row -->
+            <div class="flex justify-between text-[11px] font-mono-code text-[#948F85] mb-2 px-1 select-none">
+              <span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span>
+            </div>
+
+            <!-- Dynamic 52-Week Contribution Grid -->
+            <div id="gh-heatmap" class="gh-grid py-1">
+              <!-- Rendered via JavaScript -->
+            </div>
+
+          </div>
         </div>
 
-        <!-- Dynamic 52-Week Contribution Grid -->
-        <div id="gh-heatmap" class="gh-grid w-full py-1">
-          <!-- Populated by script below -->
-        </div>
-
-        <!-- Legend and Live Counter Footer -->
-        <div class="pt-4 border-t border-[#F0ECE1] mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-[11px] font-mono-code text-[#7D786F]">
+        <!-- Legend and Counter Footer -->
+        <div class="pt-4 border-t border-[#F0ECE1] mt-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-[11px] font-mono-code text-[#7D786F]">
           <span id="gh-total-count" class="flex items-center gap-1.5">
-            <i class="fa-solid fa-code-commit text-[#C15F3D]"></i> Loading commits...
+            <i class="fa-solid fa-code-commit text-[#C15F3D]"></i> Syncing contributions...
           </span>
           <div class="flex items-center gap-1.5 select-none self-end sm:self-auto">
             <span>Less</span>
@@ -192,22 +239,22 @@
     </div>
   </footer>
 
-  <!-- Deadpool Corner Peeker -->
-  <div style="position: fixed; bottom: -106px; left: -51px; transform: rotate(15deg); z-index: 40; pointer-events: none; transition: transform 0.2s ease;">
+  <!-- Deadpool Corner Peeker (Responsive Scaled) -->
+  <div class="deadpool-peeker">
     <img src="deadpool.png" alt="Deadpool" style="width: 245px; display: block; user-select: none;">
   </div>
 
-  <!-- Dynamic Native GitHub Contribution Graph Script -->
+  <!-- Dynamic Crisp GitHub Contribution Script -->
   <script>
     (async function initGitHubHeatmap() {
       const container = document.getElementById('gh-heatmap');
       const totalCountEl = document.getElementById('gh-total-count');
-      const totalDays = 52 * 7; // 364 days
+      const scrollContainer = document.getElementById('gh-scroll-container');
+      const totalDays = 52 * 7;
 
       try {
-        // Fetch live contribution calendar from public proxy
         const res = await fetch('https://github-contributions-api.jogruber.de/v4/meoponly?y=last');
-        if (!res.ok) throw new Error('API failed');
+        if (!res.ok) throw new Error('API down');
         const json = await res.json();
         
         const days = json.contributions || [];
@@ -226,8 +273,12 @@
           return `<div class="gh-cell ${lvl}" title="${d.date}: ${d.count} contributions"></div>`;
         }).join('');
 
+        // On mobile, automatically scroll to the latest active weeks on the right
+        if (window.innerWidth < 768 && scrollContainer) {
+          scrollContainer.scrollLeft = scrollContainer.scrollWidth;
+        }
+
       } catch (err) {
-        // Fallback: render clean placeholder grid if offline/rate-limited
         totalCountEl.innerHTML = `<span>Activity synced with GitHub</span>`;
         let fallbackHTML = '';
         for (let i = 0; i < totalDays; i++) {
@@ -239,6 +290,9 @@
           fallbackHTML += `<div class="gh-cell ${lvl}"></div>`;
         }
         container.innerHTML = fallbackHTML;
+        if (window.innerWidth < 768 && scrollContainer) {
+          scrollContainer.scrollLeft = scrollContainer.scrollWidth;
+        }
       }
     })();
   </script>
@@ -347,7 +401,6 @@
       const app = initializeApp(firebaseConfig);
       const db = getDatabase(app);
 
-      // Projects Listener
       const projectsRef = ref(db, 'projects');
       onValue(projectsRef, (snapshot) => {
         const val = snapshot.val();
@@ -364,7 +417,6 @@
         }
       }, () => renderCards(fallbackProjects));
 
-      // Telemetry Parsers
       function getOS() {
         const ua = navigator.userAgent;
         if (/android/i.test(ua)) return 'Android';
