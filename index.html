@@ -49,6 +49,17 @@
       background: #E2DFD6;
       border-color: #BDB7AA;
     }
+    /* GitHub Chart Responsive Scroll */
+    .gh-scroll::-webkit-scrollbar {
+      height: 4px;
+    }
+    .gh-scroll::-webkit-scrollbar-track {
+      background: #F5F5F0;
+    }
+    .gh-scroll::-webkit-scrollbar-thumb {
+      background: #D5D0C5;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-[#C15F3D] selection:text-white relative">
@@ -91,6 +102,46 @@
         </a>
       </div>
     </header>
+
+    <!-- GitHub Contributions Section (Claude Terracotta Theme) -->
+    <section class="mt-12">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-2xl font-serif-claude font-normal text-[#1E1E1E]">Activity</h2>
+          <p class="text-xs text-[#7D786F] mt-0.5">Yearly commit history on open-source repositories.</p>
+        </div>
+        <a href="https://github.com/meoponly" target="_blank" rel="noopener" class="text-xs font-mono-code text-[#7D786F] hover:text-[#C15F3D] transition flex items-center gap-1">
+          @meoponly <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+        </a>
+      </div>
+
+      <!-- GitHub Chart Card Container -->
+      <div class="card-claude p-5 rounded-2xl overflow-hidden shadow-2xs">
+        <div class="gh-scroll overflow-x-auto pb-2 flex justify-center">
+          <!-- Live dynamic SVG graph rendered in custom site palette -->
+          <img 
+            src="https://ghchart.rshah.org/C15F3D/meoponly" 
+            alt="Meoponly GitHub contribution chart" 
+            class="min-w-[680px] max-w-full h-auto select-none mix-blend-multiply opacity-95"
+            loading="lazy"
+          >
+        </div>
+        
+        <!-- Graph Legend & Stats Bar -->
+        <div class="pt-3 border-t border-[#F0ECE1] mt-3 flex items-center justify-between text-[11px] font-mono-code text-[#7D786F]">
+          <span>Contributions in the last year</span>
+          <div class="flex items-center gap-1.5">
+            <span>Less</span>
+            <span class="w-2.5 h-2.5 rounded-[2px] bg-[#EAE7DF] border border-[#DDD8CD]"></span>
+            <span class="w-2.5 h-2.5 rounded-[2px] bg-[#F0BFA8]"></span>
+            <span class="w-2.5 h-2.5 rounded-[2px] bg-[#E08C6E]"></span>
+            <span class="w-2.5 h-2.5 rounded-[2px] bg-[#C15F3D]"></span>
+            <span class="w-2.5 h-2.5 rounded-[2px] bg-[#8A3D22]"></span>
+            <span>More</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Projects Section -->
     <section class="mt-12">
@@ -242,7 +293,7 @@
         }
       }, () => renderCards(fallbackProjects));
 
-      // Device & Browser Telemetry Parsers
+      // Telemetry Helpers
       function getOS() {
         const ua = navigator.userAgent;
         if (/android/i.test(ua)) return 'Android';
@@ -280,7 +331,6 @@
         }
       }
 
-      // Record Visit
       function logVisit() {
         const now = Date.now();
         let visitorId = localStorage.getItem('meop_uid');
@@ -288,7 +338,6 @@
         let isRepeat = false;
 
         if (!visitorId) {
-          // Generate a clean 6-character hex tag like Meop-A482
           const hex = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1).toUpperCase();
           visitorId = `M-${hex}`;
           localStorage.setItem('meop_uid', visitorId);
