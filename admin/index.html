@@ -169,7 +169,6 @@
           </form>
         </div>
 
-        <!-- 3-COLUMN CARD GRID (SAME AS MAIN WEBSITE) -->
         <div class="mb-4">
           <h2 class="text-xl font-serif-claude font-normal">Active Portfolio Cards</h2>
           <p class="text-xs text-[#7D786F] mt-0.5">Cards match the exact visitor preview. Use the in-card controls to manage each project.</p>
@@ -187,7 +186,7 @@
           <p class="text-xs text-[#7D786F] mt-1">Real-time aggregate visitors, repeated traffic metrics, and activity timeline.</p>
         </div>
 
-        <!-- Counter Cards -->
+        <!-- Counter Cards: Computed directly from live visit logs -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <div class="bg-white border border-[#E2DFD8] p-5 rounded-2xl shadow-2xs">
             <span class="text-xs font-medium text-[#7A756D] block mb-1">Total Pageviews</span>
@@ -203,16 +202,16 @@
           </div>
         </div>
 
-        <!-- Clean Visitor Activity Feed (No Fake User IDs) -->
+        <!-- Rich Visitor Activity Feed -->
         <div class="bg-white border border-[#E2DFD8] rounded-2xl p-6 shadow-2xs">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-sm font-semibold text-[#1E1E1E] flex items-center gap-2">
-              <i class="fa-solid fa-clock-rotate-left text-[#C15F3D]"></i> Recent Visitor Activity Log
+              <i class="fa-solid fa-clock-rotate-left text-[#C15F3D]"></i> Live Visitor Feed
             </h3>
-            <span class="text-xs text-[#7A756D] font-mono-code">Latest 50 visits</span>
+            <span class="text-xs text-[#7A756D] font-mono-code" id="feed-counter">Showing all visits</span>
           </div>
 
-          <div id="recent-visitors-box" class="space-y-2.5 max-h-[500px] overflow-y-auto pr-1">
+          <div id="recent-visitors-box" class="space-y-3 max-h-[600px] overflow-y-auto pr-1">
             <p class="text-xs text-[#7A756D]">Waiting for visitor activity...</p>
           </div>
         </div>
@@ -374,44 +373,89 @@
       signOut(auth);
     });
 
-    // LISTEN FOR VISITOR ANALYTICS
+    // LISTEN FOR VISITOR ANALYTICS & DIRECTLY RECALCULATE STATS
     function listenForAnalytics() {
-      const statsRef = ref(db, 'analytics/stats');
-      onValue(statsRef, (snapshot) => {
-        const stats = snapshot.val() || { totalViews: 0, uniqueVisitors: 0, repeatedVisits: 0 };
-        document.getElementById('stat-total').innerText = stats.totalViews || 0;
-        document.getElementById('stat-unique').innerText = stats.uniqueVisitors || 0;
-        document.getElementById('stat-repeat').innerText = stats.repeatedVisits || 0;
-      });
-
       const visitsRef = ref(db, 'analytics/visits');
       onValue(visitsRef, (snapshot) => {
         const data = snapshot.val() || {};
-        const logs = Object.values(data).reverse().slice(0, 50);
+        const logs = Object.values(data);
+        const total = logs.length;
+
+        // Assign clean sequential user tags based on first seen time
+        const userFirstSeen = new Map();
+        let userCounter = 1;
+
+        // Sort chronologically ascending to assign User #01, User #02 correctly
+        const chronological = [...logs].sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+        chronological.forEach(l => {
+          const rawUid = l.uid || 'anon';
+          if (!userFirstSeen.has(rawUid)) {
+            const shortCode = rawUid.includes('-') ? rawUid.split('-')[1] : rawUid.slice(-4).toUpperCase();
+            userFirstSeen.set(rawUid, {
+              userNumber: userCounter++,
+              label: `User #${String(userCounter - 1).padStart(2, '0')} (${shortCode})`
+            });
+          }
+        });
+
+        const uniqueCount = userFirstSeen.size;
+        const repeatCount = Math.max(0, total - uniqueCount);
+
+        // Update the top 3 cards directly (Never 0 if logs exist!)
+        document.getElementById('stat-total').innerText = total;
+        document.getElementById('stat-unique').innerText = uniqueCount;
+        document.getElementById('stat-repeat').innerText = repeatCount;
+        document.getElementById('feed-counter').innerText = `Total ${total} recorded visits`;
+
         const container = document.getElementById('recent-visitors-box');
-        
         if (logs.length === 0) {
           container.innerHTML = `<p class="text-xs text-[#7A756D]">No visits logged yet.</p>`;
           return;
         }
 
-        // Clean view without hash IDs
-        container.innerHTML = logs.map(l => {
+        // Display newest first (up to latest 60)
+        const recent = [...logs].reverse().slice(0, 60);
+
+        container.innerHTML = recent.map(l => {
           const dateStr = new Date(l.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' });
-          const isRepeat = l.isRepeat;
+          const userMeta = userFirstSeen.get(l.uid || 'anon') || { label: 'Visitor' };
+          const isRepeat = l.isRepeat || (l.count && l.count > 1);
+
+          // Referrer Icon & Tag
+          let refIcon = 'fa-solid fa-arrow-pointer';
+          let refName = l.referrer || 'Direct';
+          if (refName.toLowerCase().includes('telegram')) refIcon = 'fa-brands fa-telegram text-sky-500';
+          else if (refName.toLowerCase().includes('whatsapp')) refIcon = 'fa-brands fa-whatsapp text-emerald-500';
+          else if (refName.toLowerCase().includes('google')) refIcon = 'fa-brands fa-google text-red-500';
+          else if (refName.toLowerCase().includes('github')) refIcon = 'fa-brands fa-github text-[#1E1E1E]';
+
           return `
-            <div class="flex items-center justify-between text-xs py-2.5 px-3.5 bg-[#F9F8F6] rounded-xl border border-[#EDEAE3]">
-              <div class="flex items-center gap-3">
-                <span class="inline-block w-2 h-2 rounded-full ${isRepeat ? 'bg-[#C15F3D]' : 'bg-emerald-500'}"></span>
-                <span class="font-medium text-[#1E1E1E]">
-                  ${isRepeat ? 'Returning Visitor' : 'New Visitor'}
+            <div class="p-3 bg-[#F9F8F6] rounded-xl border border-[#EDEAE3] flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+              
+              <!-- Left: User Identity Badge & Status -->
+              <div class="flex items-center gap-2.5 flex-wrap">
+                <span class="inline-block w-2 h-2 rounded-full ${isRepeat ? 'bg-[#C15F3D]' : 'bg-emerald-500'} shrink-0"></span>
+                <span class="text-xs font-mono-code font-bold text-[#1E1E1E] bg-[#ECE9E1] px-2 py-0.5 rounded border border-[#DDD8CD]">
+                  ${userMeta.label}
                 </span>
-                <span class="text-[10px] font-mono-code px-2 py-0.5 rounded font-medium ${isRepeat ? 'bg-orange-100 text-orange-800' : 'bg-emerald-100 text-emerald-800'}">
+                <span class="text-[10px] font-mono-code px-2 py-0.5 rounded font-semibold ${isRepeat ? 'bg-orange-100 text-orange-800' : 'bg-emerald-100 text-emerald-800'}">
                   ${isRepeat ? `Visit #${l.count || 2}` : 'First Visit'}
                 </span>
-                ${l.referrer && l.referrer !== 'Direct' ? `<span class="text-[10px] text-[#7A756D] hidden sm:inline">via ${l.referrer}</span>` : ''}
+                
+                <!-- Traffic Source -->
+                <span class="text-[11px] font-medium text-[#4D4840] flex items-center gap-1.5 ml-1">
+                  <i class="${refIcon} text-xs"></i> ${refName}
+                </span>
               </div>
-              <span class="text-[#7A756D] font-mono-code text-[11px]">${dateStr}</span>
+
+              <!-- Right: Device, OS, Screen & Time -->
+              <div class="flex items-center gap-2 text-[10px] text-[#7A756D] font-mono-code flex-wrap md:justify-end">
+                ${l.os ? `<span class="bg-white border border-[#E2DFD8] px-1.5 py-0.5 rounded">${l.os}</span>` : ''}
+                ${l.browser ? `<span class="bg-white border border-[#E2DFD8] px-1.5 py-0.5 rounded">${l.browser}</span>` : ''}
+                ${l.screen ? `<span class="bg-white border border-[#E2DFD8] px-1.5 py-0.5 rounded">${l.screen}</span>` : ''}
+                <span class="text-[#1E1E1E] font-medium ml-1">${dateStr}</span>
+              </div>
+
             </div>
           `;
         }).join('');
@@ -428,7 +472,6 @@
       });
     }
 
-    // RENDER EXACT SAME CARD VIEW AS THE MAIN WEBSITE
     function renderAdminCards(items) {
       if (items.length === 0) {
         seedBox.classList.remove('hidden');
@@ -441,7 +484,6 @@
         <div class="card-claude p-5 rounded-2xl flex flex-col justify-between h-full relative group">
           
           <div>
-            <!-- Header bar with Title, Rank badge, and Links -->
             <div class="flex items-start justify-between gap-2 mb-2">
               <div class="flex items-center gap-2">
                 <span class="text-[11px] font-mono-code font-bold bg-[#EAE7DF] text-[#635E55] px-1.5 py-0.5 rounded border border-[#DDD8CD]">
@@ -455,17 +497,14 @@
               </div>
             </div>
 
-            <!-- Description -->
             <p class="text-xs leading-relaxed text-[#5A554D] mb-4">${p.desc}</p>
           </div>
 
-          <!-- Bottom bar: Tags + Reorder & Action buttons -->
           <div class="pt-3 border-t border-[#F0ECE1] space-y-3">
             <div class="flex flex-wrap gap-1.5">
               ${(p.tags || []).map(t => `<span class="text-[10px] font-mono-code px-2 py-0.5 rounded bg-[#F4F1EA] text-[#6D675E]">${t}</span>`).join('')}
             </div>
 
-            <!-- Card Admin Actions (Arrows + Edit/Delete) -->
             <div class="flex items-center justify-between pt-1 border-t border-[#F6F4EE]">
               <div class="flex items-center gap-1 bg-[#F5F5F0] border border-[#DDD8CD] px-1.5 py-0.5 rounded-lg">
                 <button 
