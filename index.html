@@ -129,10 +129,10 @@
     <img src="deadpool.png" alt="Deadpool" style="width: 245px; display: block; user-select: none;">
   </div>
 
-  <!-- Firebase Live Database & Analytics Script -->
+  <!-- Firebase Live Database & Telemetry Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-    import { getDatabase, ref, onValue, push, runTransaction } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+    import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD1WCOzRfz13BBTGnwMLOcNrdJcTxa5Wrs",
@@ -242,55 +242,80 @@
         }
       }, () => renderCards(fallbackProjects));
 
-      // VISITOR TRACKING LOGIC
-      function trackVisitor() {
+      // Device & Browser Telemetry Parsers
+      function getOS() {
+        const ua = navigator.userAgent;
+        if (/android/i.test(ua)) return 'Android';
+        if (/iPad|iPhone|iPod/.test(ua)) return 'iOS';
+        if (/Win/i.test(ua)) return 'Windows';
+        if (/Mac/i.test(ua)) return 'macOS';
+        if (/Linux/i.test(ua)) return 'Linux';
+        return 'Other';
+      }
+
+      function getBrowser() {
+        const ua = navigator.userAgent;
+        if (/telegram/i.test(ua)) return 'Telegram App';
+        if (/edg/i.test(ua)) return 'Edge';
+        if (/chrome|crios/i.test(ua) && !/opr|opera/i.test(ua)) return 'Chrome';
+        if (/safari/i.test(ua) && !/chrome/i.test(ua)) return 'Safari';
+        if (/firefox|fxios/i.test(ua)) return 'Firefox';
+        return 'Browser';
+      }
+
+      function getCleanReferrer() {
+        const ref = document.referrer;
+        if (!ref) return 'Direct';
+        if (ref.includes('telegram')) return 'Telegram';
+        if (ref.includes('whatsapp')) return 'WhatsApp';
+        if (ref.includes('google.')) return 'Google Search';
+        if (ref.includes('github.com')) return 'GitHub';
+        if (ref.includes('twitter.com') || ref.includes('t.co') || ref.includes('x.com')) return 'X (Twitter)';
+        if (ref.includes('reddit.com')) return 'Reddit';
+        if (ref.includes('is-a.dev')) return 'is-a.dev';
+        try {
+          return new URL(ref).hostname;
+        } catch {
+          return ref.substring(0, 35);
+        }
+      }
+
+      // Record Visit
+      function logVisit() {
         const now = Date.now();
         let visitorId = localStorage.getItem('meop_uid');
         let visitCount = parseInt(localStorage.getItem('meop_vcount') || '0', 10);
-        let isRepeated = false;
+        let isRepeat = false;
 
         if (!visitorId) {
-          visitorId = 'v_' + Math.random().toString(36).substring(2, 11) + '_' + now.toString(36);
+          // Generate a clean 6-character hex tag like Meop-A482
+          const hex = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1).toUpperCase();
+          visitorId = `M-${hex}`;
           localStorage.setItem('meop_uid', visitorId);
           visitCount = 1;
         } else {
           visitCount += 1;
-          isRepeated = true;
+          isRepeat = true;
         }
         localStorage.setItem('meop_vcount', visitCount.toString());
 
-        // Update overall stats counters atomically
-        const statsRef = ref(db, 'analytics/stats');
-        runTransaction(statsRef, (current) => {
-          if (!current) {
-            return {
-              totalViews: 1,
-              uniqueVisitors: isRepeated ? 0 : 1,
-              repeatedVisits: isRepeated ? 1 : 0
-            };
-          }
-          return {
-            totalViews: (current.totalViews || 0) + 1,
-            uniqueVisitors: isRepeated ? (current.uniqueVisitors || 0) : (current.uniqueVisitors || 0) + 1,
-            repeatedVisits: isRepeated ? (current.repeatedVisits || 0) + 1 : (current.repeatedVisits || 0)
-          };
-        });
-
-        // Record individual session log entry
-        const visitsListRef = ref(db, 'analytics/visits');
-        push(visitsListRef, {
+        const visitsRef = ref(db, 'analytics/visits');
+        push(visitsRef, {
           uid: visitorId,
           count: visitCount,
-          isRepeat: isRepeated,
+          isRepeat: isRepeat,
           timestamp: now,
-          referrer: document.referrer || 'Direct',
-          userAgent: navigator.userAgent.substring(0, 100)
+          referrer: getCleanReferrer(),
+          rawReferrer: document.referrer || 'Direct',
+          os: getOS(),
+          browser: getBrowser(),
+          screen: `${window.innerWidth}×${window.innerHeight}`,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown'
         });
       }
 
-      // Record visit only once per session tab load
       if (!sessionStorage.getItem('meop_session_logged')) {
-        trackVisitor();
+        logVisit();
         sessionStorage.setItem('meop_session_logged', 'true');
       }
 
